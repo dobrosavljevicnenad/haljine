@@ -21,7 +21,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'haljine', // folder u Cloudinary
+    folder: 'haljine',
     allowed_formats: ['jpg', 'jpeg', 'png'],
   },
 });
@@ -38,7 +38,7 @@ mongoose.connect('mongodb+srv://ndobrosavljevic01:admin@haljine.usfr19e.mongodb.
 // Schema
 const DressSchema = new mongoose.Schema({
   naziv: String,
-  slika: String, // URL slike sa Cloudinary
+  slika: String,
   lager: [
     {
       boja: String,
@@ -65,13 +65,17 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
 app.use(express.json());
+
+// Anti-keš middleware
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 // Upload slike na Cloudinary
 app.post('/api/upload', upload.single('slika'), (req, res) => {
   if (!req.file) return res.status(400).send({ error: 'Fajl nije prosleđen' });
-  // URL do slike na Cloudinary
   res.json({ url: req.file.path });
 });
 
@@ -88,25 +92,57 @@ app.post('/api/haljine', async (req, res) => {
   res.json({ message: "OK" });
 });
 
-// POST naručivanje haljine (smanji količinu)
+// ✅ POST naručivanje haljine (smanji količinu, atomarno)
 app.post('/api/naruci/:id', async (req, res) => {
   const { boja, kolicina } = req.body;
-  const haljina = await Dress.findById(req.params.id);
+
+  const haljina = await Dress.findOne({
+    _id: req.params.id,
+    "lager.boja": boja
+  });
 
   if (!haljina) return res.status(404).send({ error: 'Haljina nije pronađena' });
 
-  const entry = haljina.lager.find((e) => e.boja === boja);
+  const bojaEntry = haljina.lager.find((e) => e.boja === boja);
 
-  if (!entry || entry.kolicina < kolicina) {
+  if (!bojaEntry || bojaEntry.kolicina < kolicina) {
     return res.status(400).send({ error: 'Nema dovoljno na lageru' });
   }
 
-  entry.kolicina -= kolicina;
-  await haljina.save();
-  res.json({ message: "OK" });
+  await Dress.updateOne(
+    { _id: req.params.id, "lager.boja": boja },
+    { $inc: { "lager.$.kolicina": -kolicina } }
+  );
+
+  res.json({ message: "Naručeno" });
 });
 
-// PUT izmena haljine
+// ✅ POST dodavanje količine za boju (atomarno)
+app.post('/api/dodajKolicinu/:id', async (req, res) => {
+  const { boja, kolicina } = req.body;
+
+  try {
+    const result = await Dress.updateOne(
+      { _id: req.params.id, "lager.boja": boja },
+      { $inc: { "lager.$.kolicina": kolicina } }
+    );
+
+    // Ako boja ne postoji — dodaj novu
+    if (result.modifiedCount === 0) {
+      await Dress.updateOne(
+        { _id: req.params.id },
+        { $push: { lager: { boja, kolicina } } }
+      );
+    }
+
+    res.json({ message: "Količina ažurirana" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Greška u dodavanju količine" });
+  }
+});
+
+// PUT izmena haljine (oprezno koristiti, samo za ime/sliku)
 app.put('/api/haljine/:id', async (req, res) => {
   try {
     await Dress.findByIdAndUpdate(req.params.id, req.body, { new: true });

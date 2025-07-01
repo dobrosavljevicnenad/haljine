@@ -17,9 +17,7 @@ export class DressListComponent {
   novaHaljina = {
     naziv: '',
     slika: '',
-    lager: [
-      { boja: '', kolicina: 0 },
-    ],
+    lager: [{ boja: '', kolicina: 0 }],
   };
 
   novaBoja: { [id: string]: string } = {};
@@ -31,11 +29,10 @@ export class DressListComponent {
 
   ucitaj() {
     this.http.get<any[]>('https://haljine.onrender.com/api/haljine', {
-      params: { t: Date.now().toString() } // query param sprečava keširanje
+      params: { t: Date.now().toString() }, // sprečava keširanje
     }).subscribe(data => {
-    this.haljine = data;
-});
-
+      this.haljine = data;
+    });
   }
 
   naruci(id: string, boja: string, kolicina: number) {
@@ -71,20 +68,15 @@ export class DressListComponent {
     });
   }
 
+  // ✅ NOVI BEZBEDNI PRISTUP: ne čitamo i ne šaljemo celu haljinu više
   dodajIliAzurirajBoju(id: string, boja: string, kolicina: number) {
-    const haljina = this.haljine.find(h => h._id === id);
-    if (!haljina) return;
+    if (!boja || !kolicina) return;
 
-    const postojeca = haljina.lager.find((b: { boja: string; kolicina: number }) => b.boja.toLowerCase() === boja.toLowerCase());
-
-    if (postojeca) {
-      postojeca.kolicina += kolicina;
-    } else {
-      haljina.lager.push({ boja, kolicina });
-    }
-
-    this.http.put(`https://haljine.onrender.com/api/haljine/${id}`, haljina).subscribe(() => {
-      this.ucitaj();
+    this.http.post(`https://haljine.onrender.com/api/dodajKolicinu/${id}`, {
+      boja,
+      kolicina,
+    }).subscribe(() => {
+      this.ucitaj(); // osveži stanje
       this.novaBoja[id] = '';
       this.novaKolicina[id] = 0;
     });
