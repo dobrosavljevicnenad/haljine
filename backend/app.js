@@ -1,13 +1,13 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+const express = require('express'); // pomaze da brzo napravis web server i API(rute)
+const mongoose = require('mongoose'); // za povezivanje sa bazom
+const cors = require('cors'); // omogucava da frontend moze da salje zahteve backendu, inace browser blokira te zahteve zbog bezbednosti
 const http = require('http');
-const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer'); // za upload slika
+const { CloudinaryStorage } = require('multer-storage-cloudinary'); // cloud za mongodb
 const cloudinary = require('cloudinary').v2;
 
 // Express i server
-const app = express();
+const app = express(); // pravimo instancu express aplikacije, sad mozemo da koristim app.get, app.post, app.use, app.listen..
 const server = http.createServer(app);
 
 // Cloudinary konfiguracija
@@ -35,6 +35,7 @@ mongoose.connect('mongodb+srv://ndobrosavljevic01:admin@haljine.usfr19e.mongodb.
 }).then(() => console.log('✅ MongoDB konektovan'))
   .catch(err => console.error('❌ Greška pri konekciji:', err));
 
+
 // Schema
 const DressSchema = new mongoose.Schema({
   naziv: String,
@@ -51,25 +52,29 @@ const Dress = mongoose.model('Dress', DressSchema);
 
 // Middleware
 const corsOptions = {
-  origin: function (origin, callback) {
+  origin: function (origin, callback) { // origin je domen(haljine.netlify.app)
     console.log("Origin:", origin);
     const allowedOrigins = ['http://localhost:4200', 'https://haljine.onrender.com', 'https://haljine.netlify.app'];
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, true); // ako je domen u listi allowedOrigins onda se poziva calback (dozvoljava se pristup)
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS')); // inace odbija
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // dozvoljava koje metode mogu da se koriste
   allowedHeaders: ['Content-Type', 'Authorization'],
+  // mozes da saljes json ili auth(za login)
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
 // Anti-keš middleware
+// Keširanje (cache) znači da browser pamti stari odgovor 
+// sa servera da ne bi svaki put slalo novi zahtev.
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
+  // ovo znaci da dodaje HTTP header svakom odgovoru NE KEISRAJ NISTA!, uvel trazi nove podatke sa servera.
   next();
 });
 
@@ -152,9 +157,22 @@ app.put('/api/haljine/:id', async (req, res) => {
   }
 });
 
+// DELETE brisanje haljine po ID-ju
+app.delete('/api/haljine/:id', async (req, res) => {
+  try {
+    await Dress.findByIdAndDelete(req.params.id);
+    res.json({ message: "Haljina obrisana" });
+  } catch (err) {
+    res.status(500).json({ error: "Greška pri brisanju haljine" });
+  }
+});
+
+
 app.get('/', (req, res) => {
   res.send('🎉 Backend API radi. Možeš koristiti /api/haljine kako bi dobio prikaz svih haljina.');
 });
 
 // Start servera
-server.listen(3000, () => console.log('🚀 Server radi na portu 3000'));
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => console.log(`🚀 Server radi na portu ${PORT}`));
+

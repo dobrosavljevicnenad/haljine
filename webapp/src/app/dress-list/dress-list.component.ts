@@ -81,4 +81,14 @@ export class DressListComponent {
       this.novaKolicina[id] = 0;
     });
   }
+
+  obrisiHaljinu(id: string) {
+  if (!confirm('Da li si siguran da želiš da obrišeš ovu haljinu?')) return;
+
+  this.http.delete(`https://haljine.onrender.com/api/haljine/${id}`).subscribe(() => {
+    this.ucitaj(); // osveži listu posle brisanja
+  });
+  }
+
+
 }
