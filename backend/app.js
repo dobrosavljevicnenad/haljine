@@ -101,5 +101,9 @@ app.put('/api/haljine/:id', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.send('🎉 Backend API radi. Možeš koristiti /api/haljine kako bi dobio prikaz svih haljina.');
+});
+
 // Start servera
 server.listen(3000, () => console.log('🚀 Server radi na portu 3000'));
