@@ -30,9 +30,12 @@ export class DressListComponent {
   }
 
   ucitaj() {
-    this.http.get<any[]>('https://haljine.onrender.com/api/haljine').subscribe(data => {
-      this.haljine = data;
-    });
+    this.http.get<any[]>('https://haljine.onrender.com/api/haljine', {
+      params: { t: Date.now().toString() } // query param sprečava keširanje
+    }).subscribe(data => {
+    this.haljine = data;
+});
+
   }
 
   naruci(id: string, boja: string, kolicina: number) {
