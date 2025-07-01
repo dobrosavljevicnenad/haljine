@@ -50,7 +50,10 @@ const DressSchema = new mongoose.Schema({
 const Dress = mongoose.model('Dress', DressSchema);
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://haljine.netlify.app/'], // zameni sa stvarnim Netlify URL-om
+}));
+
 app.use(express.json());
 
 // Upload slike na Cloudinary
