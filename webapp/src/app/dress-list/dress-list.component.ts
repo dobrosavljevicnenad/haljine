@@ -30,19 +30,19 @@ export class DressListComponent {
   }
 
   ucitaj() {
-    this.http.get<any[]>('http://localhost:3000/api/haljine').subscribe(data => {
+    this.http.get<any[]>('http://haljine.onrender.com/api/haljine').subscribe(data => {
       this.haljine = data;
     });
   }
 
   naruci(id: string, boja: string, kolicina: number) {
-    this.http.post(`http://localhost:3000/api/naruci/${id}`, { boja, kolicina }).subscribe(() => {
+    this.http.post(`http://haljine.onrender.com/api/naruci/${id}`, { boja, kolicina }).subscribe(() => {
       this.ucitaj();
     });
   }
 
   dodajHaljinu() {
-    this.http.post('http://localhost:3000/api/haljine', this.novaHaljina).subscribe(() => {
+    this.http.post('https://haljine.onrender.com/api/haljine', this.novaHaljina).subscribe(() => {
       this.ucitaj();
       this.novaHaljina = {
         naziv: '',
@@ -63,7 +63,7 @@ export class DressListComponent {
     const formData = new FormData();
     formData.append('slika', file);
 
-    this.http.post<{ url: string }>('http://localhost:3000/api/upload', formData).subscribe(res => {
+    this.http.post<{ url: string }>('https://haljine.onrender.com/api/upload', formData).subscribe(res => {
       this.novaHaljina.slika = res.url;
     });
   }
@@ -80,7 +80,7 @@ export class DressListComponent {
       haljina.lager.push({ boja, kolicina });
     }
 
-    this.http.put(`http://localhost:3000/api/haljine/${id}`, haljina).subscribe(() => {
+    this.http.put(`https://haljine.onrender.com/api/haljine/${id}`, haljina).subscribe(() => {
       this.ucitaj();
       this.novaBoja[id] = '';
       this.novaKolicina[id] = 0;
