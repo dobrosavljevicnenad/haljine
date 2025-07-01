@@ -51,7 +51,15 @@ const Dress = mongoose.model('Dress', DressSchema);
 
 // Middleware
 const corsOptions = {
-  origin: ['http://localhost:4200', 'https://haljine.onrender.com, https://haljine.netlify.app/'], // ili '*', ali to izbegavaj u produkciji
+  origin: function (origin, callback) {
+    console.log("Origin:", origin);
+    const allowedOrigins = ['http://localhost:4200', 'https://haljine.onrender.com', 'https://haljine.netlify.app'];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
