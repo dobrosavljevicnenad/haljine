@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 export class DressListComponent {
   private http = inject(HttpClient);
   haljine: any[] = [];
+  ucitavanje: boolean = false;
+
 
   novaHaljina = {
     naziv: '',
@@ -32,6 +34,7 @@ export class DressListComponent {
       params: { t: Date.now().toString() }, // sprečava keširanje
     }).subscribe(data => {
       this.haljine = data;
+      this.ucitavanje = false;
     });
   }
 

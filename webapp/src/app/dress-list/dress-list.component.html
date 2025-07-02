@@ -1,4 +1,18 @@
 <!-- 📦 Forma za dodavanje nove haljine -->
+<div *ngIf="ucitavanje"
+     class="fixed inset-0 z-50 bg-white bg-opacity-95 flex items-center justify-center text-center p-6">
+  <div>
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
+      🔄 Učitavanje podataka...
+    </h2>
+    <p class="text-lg text-gray-600 max-w-xl mx-auto">
+      Backend server se trenutno pokreće. Ovo može potrajati i do 30 sekundi. Hvala na strpljenju 🙏
+    </p>
+  </div>
+</div>
+
+<div *ngIf="!ucitavanje">
+
 <section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-lg mb-10">
   <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
     ➕ Dodaj novu haljinu
@@ -91,3 +105,4 @@
     </div>
   </div>
 </section>
+</div>
