@@ -30,6 +30,7 @@ export class DressListComponent {
   }
 
   ucitaj() {
+    this.ucitavanje = true;
     this.http.get<any[]>('https://haljine.onrender.com/api/haljine', {
       params: { t: Date.now().toString() }, // sprečava keširanje
     }).subscribe(data => {
