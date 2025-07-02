@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 export class DressListComponent {
   private http = inject(HttpClient);
   haljine: any[] = [];
-  ucitavanje: boolean = false; // 👈 dodato
 
   novaHaljina = {
     naziv: '',
@@ -29,22 +28,12 @@ export class DressListComponent {
   }
 
   ucitaj() {
-  this.ucitavanje = true; // 👈 Prikaži da učitava
-
-  this.http.get<any[]>('https://haljine.onrender.com/api/haljine', {
-    params: { t: Date.now().toString() },
-  }).subscribe({
-    next: data => {
+    this.http.get<any[]>('https://haljine.onrender.com/api/haljine', {
+      params: { t: Date.now().toString() }, // sprečava keširanje
+    }).subscribe(data => {
       this.haljine = data;
-      this.ucitavanje = false; // 👈 Sakrij indikator
-    },
-    error: () => {
-      this.haljine = [];
-      this.ucitavanje = false; // 👈 čak i na grešku, da ne visi
-    }
-  });
+    });
   }
-
 
   naruci(id: string, boja: string, kolicina: number) {
     this.http.post(`https://haljine.onrender.com/api/naruci/${id}`, { boja, kolicina }).subscribe(() => {
