@@ -51,35 +51,35 @@ export class DressListComponent {
     });
   }
 
-  naruci(id: string, boja: string, kolicina: number) {
-    this.http.post(`https://haljine.onrender.com/api/naruci/${id}`, {
-      boja,
-      kolicina,
-      ime: 'N/A',
-      prezime: 'N/A',
-      adresa: 'N/A',
-      telefon: 'N/A'
-    }).subscribe({
-      next: () => {
-        const haljina = this.haljine.find((h: any) => h._id === id);
-        const bojaEntry = haljina?.lager.find((b: any) => b.boja === boja);
-        if (bojaEntry) {
-          bojaEntry.kolicina -= kolicina;
-          if (bojaEntry.kolicina <= 0) {
-            haljina.lager = haljina.lager.filter((b: any) => b.boja !== boja);
-          }
-        }
-        this.ucitajNarudzbine(); // osveži listu
-      },
-      error: (err) => {
-        if (err.status === 400 && err.error?.error === 'Nema dovoljno na lageru') {
-          alert('❌ Boje trenutno nema na stanju.');
-        } else {
-          alert('❌ Došlo je do greške pri naručivanju.');
-        }
-      }
-    });
-  }
+  // naruci(id: string, boja: string, kolicina: number) {
+  //   this.http.post(`https://haljine.onrender.com/api/naruci/${id}`, {
+  //     boja,
+  //     kolicina,
+  //     ime: 'N/A',
+  //     prezime: 'N/A',
+  //     adresa: 'N/A',
+  //     telefon: 'N/A'
+  //   }).subscribe({
+  //     next: () => {
+  //       const haljina = this.haljine.find((h: any) => h._id === id);
+  //       const bojaEntry = haljina?.lager.find((b: any) => b.boja === boja);
+  //       if (bojaEntry) {
+  //         bojaEntry.kolicina -= kolicina;
+  //         if (bojaEntry.kolicina <= 0) {
+  //           haljina.lager = haljina.lager.filter((b: any) => b.boja !== boja);
+  //         }
+  //       }
+  //       this.ucitajNarudzbine(); // osveži listu
+  //     },
+  //     error: (err) => {
+  //       if (err.status === 400 && err.error?.error === 'Nema dovoljno na lageru') {
+  //         alert('❌ Boje trenutno nema na stanju.');
+  //       } else {
+  //         alert('❌ Došlo je do greške pri naručivanju.');
+  //       }
+  //     }
+  //   });
+  // }
 
   dodajHaljinu() {
     this.http.post('https://haljine.onrender.com/api/haljine', this.novaHaljina).subscribe(() => {
@@ -140,10 +140,13 @@ export class DressListComponent {
   }
 
   ucitajNarudzbine() {
-    this.http.get<any[]>('https://haljine.onrender.com/api/narudzbine').subscribe(data => {
+    this.http.get<any[]>('https://haljine.onrender.com/api/narudzbine', {
+      params: { t: Date.now().toString() } // dodajemo timestamp da browser ne kešira
+    }).subscribe(data => {
       this.narudzbine = data;
     });
   }
+
 
   otvoriFormuZaNarudzbinu(haljina: any, boja: string) {
     this.izabranaHaljina = haljina;
