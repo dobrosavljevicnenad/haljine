@@ -143,19 +143,22 @@ app.post('/api/naruci/:id', async (req, res) => {
     {$pull: {lager: {boja:boja, kolicina: {$lte:0}}}}
   );
 
-  await Order.create({
-    haljinaId: haljina._id,
-    naziv: haljina.naziv,
-    slika: haljina.slika,
-    cena: haljina.cena,
-    boja,
-    kolicina,
-    ime,
-    prezime,
-    adresa,
-    telefon,
-    screenshot,
-  });
+  const narudzbina = {
+  haljinaId: haljina._id,
+  naziv: haljina.naziv,
+  slika: haljina.slika,
+  cena: haljina.cena,
+  boja,
+  kolicina,
+  ime: ime || '',
+  prezime: prezime || '',
+  adresa: adresa || '',
+  telefon: telefon || '',
+  screenshot: screenshot || '',
+  };
+
+  await Order.create(narudzbina);
+
 
   res.json({ message: "Naručeno" });
 });
