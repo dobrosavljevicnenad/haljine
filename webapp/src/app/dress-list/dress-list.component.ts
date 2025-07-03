@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class DressListComponent {
   private http = inject(HttpClient);
   haljine: any[] = [];
+  narudzbine: any[] = [];
   ucitavanje: boolean = false;
   filterBoja: string = '';
 
@@ -27,6 +28,7 @@ export class DressListComponent {
 
   constructor() {
     this.ucitaj();
+    this.ucitajNarudzbine();
   }
 
   ucitaj() {
@@ -117,6 +119,12 @@ export class DressListComponent {
     this.http.delete(`https://haljine.onrender.com/api/haljine/${id}`).subscribe(() => {
       this.haljine = this.haljine.filter(h => h._id !== id);
     });
+  }
+
+  ucitajNarudzbine() {
+    this.http.get<any[]>('https://haljine.onrender.com/api/narudzbine').subscribe(data => {
+      this.narudzbine = data;
+    })
   }
 
 

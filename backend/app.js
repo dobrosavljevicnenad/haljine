@@ -29,7 +29,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 // MongoDB konekcija
-mongoose.connect('mongodb+srv://ndobrosavljevic01:admin@haljine.usfr19e.mongodb.net/', {
+mongoose.connect('mongodb+srv://ndobrosavljevic01:admin@haljine.usfr19e.mongodb.net/haljine_baza', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('✅ MongoDB konektovan'))
@@ -47,6 +47,17 @@ const DressSchema = new mongoose.Schema({
     },
   ],
 });
+
+const OrderSchema = new mongoose.Schema({
+  haljinaId: mongoose.Schema.Types.ObjectId,
+  naziv: String,
+  slika: String,
+  boja: String,
+  kolicina: Number,
+  vreme: {type:Date, default: Date.now},
+});
+
+const Order = mongoose.model('Order', OrderSchema);
 
 const Dress = mongoose.model('Dress', DressSchema);
 
@@ -124,7 +135,20 @@ app.post('/api/naruci/:id', async (req, res) => {
     {$pull: {lager: {boja:boja, kolicina: {$lte:0}}}}
   );
 
+  await Order.create({
+    haljinaId: haljina._id,
+    naziv: haljina.naziv,
+    slika:haljina.slika,
+    boja,
+    kolicina,
+  });
+
   res.json({ message: "Naručeno" });
+});
+
+app.get('/api/narudzbine', async (req, res) => {
+  const narudzbine = await Order.find().sort({ vreme: -1 });
+  res.json(narudzbine);
 });
 
 // ✅ POST dodavanje količine za boju (atomarno)
