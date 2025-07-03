@@ -119,6 +119,11 @@ app.post('/api/naruci/:id', async (req, res) => {
     { $inc: { "lager.$.kolicina": -kolicina } }
   );
 
+  await Dress.updateOne(
+    {_id: req.params.id},
+    {$pull: {lager: {boja:boja, kolicina: {$lte:0}}}}
+  );
+
   res.json({ message: "Naručeno" });
 });
 
