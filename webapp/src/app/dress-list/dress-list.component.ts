@@ -29,10 +29,6 @@ export class DressListComponent {
   izabranaHaljina: any = null;
   izabranaBoja: string = '';
   formaKupca = {
-    ime: '',
-    prezime: '',
-    adresa: '',
-    telefon: '',
     screenshot: ''
   };
 
@@ -154,7 +150,7 @@ export class DressListComponent {
   otvoriFormuZaNarudzbinu(haljina: any, boja: string) {
     this.izabranaHaljina = haljina;
     this.izabranaBoja = boja;
-    this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+    this.formaKupca = { screenshot: '' };
   }
 
   posaljiNarudzbinu() {
