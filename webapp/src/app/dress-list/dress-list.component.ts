@@ -30,7 +30,8 @@ export class DressListComponent {
     ime: '',
     prezime: '',
     adresa: '',
-    telefon: ''
+    telefon: '',
+    screenshot: ''
   };
 
   novaBoja: { [id: string]: string } = {};
@@ -151,7 +152,7 @@ export class DressListComponent {
   otvoriFormuZaNarudzbinu(haljina: any, boja: string) {
     this.izabranaHaljina = haljina;
     this.izabranaBoja = boja;
-    this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '' };
+    this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
   }
 
   posaljiNarudzbinu() {
@@ -179,6 +180,27 @@ export class DressListComponent {
     });
   }
 
+  obrisiNarudzbinu(id: string) {
+  if (!confirm('Da li si siguran da želiš da obrišeš ovu porudžbinu?')) return;
+
+    this.http.delete(`https://haljine.onrender.com/api/narudzbine/${id}`).subscribe(() => {
+      this.narudzbine = this.narudzbine.filter(n => n._id !== id);
+    });
+  }
+
+  uploadScreenshot(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('slika', file); // backend koristi isto polje kao za sliku haljine
+
+  this.http.post<{ url: string }>('https://haljine.onrender.com/api/upload', formData)
+    .subscribe(res => {
+      this.formaKupca.screenshot = res.url;
+    });
+}
+
   get filteredHaljine(): any[] {
     const boja = this.filterBoja.trim().toLowerCase();
     if (!boja) return this.haljine;
@@ -188,11 +210,4 @@ export class DressListComponent {
     );
   }
 
-  obrisiNarudzbinu(id: string) {
-  if (!confirm('Da li si siguran da želiš da obrišeš ovu porudžbinu?')) return;
-
-    this.http.delete(`https://haljine.onrender.com/api/narudzbine/${id}`).subscribe(() => {
-      this.narudzbine = this.narudzbine.filter(n => n._id !== id);
-    });
-  }
 }

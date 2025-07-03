@@ -60,8 +60,10 @@ const OrderSchema = new mongoose.Schema({
   prezime: String,
   adresa: String,
   telefon: String,
+  screenshot: String, // 📷 dodato polje
   vreme: { type: Date, default: Date.now },
 });
+
 
 const Order = mongoose.model('Order', OrderSchema);
 
@@ -116,7 +118,7 @@ app.post('/api/haljine', async (req, res) => {
 
 // ✅ POST naručivanje haljine (smanji količinu, atomarno)
 app.post('/api/naruci/:id', async (req, res) => {
-  const { boja, kolicina, ime, prezime, adresa, telefon } = req.body; // ✅ OVO DODAJ
+  const { boja, kolicina, ime, prezime, adresa, telefon, screenshot } = req.body;
 
   const haljina = await Dress.findOne({
     _id: req.params.id,
@@ -152,6 +154,7 @@ app.post('/api/naruci/:id', async (req, res) => {
     prezime,
     adresa,
     telefon,
+    screenshot,
   });
 
   res.json({ message: "Naručeno" });

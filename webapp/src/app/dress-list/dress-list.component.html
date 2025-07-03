@@ -165,6 +165,13 @@
         <div class="text-sm text-gray-600">Telefon: {{ n.telefon }}</div>
         {{ n.vreme | date:'dd.MM.yyyy HH:mm' }}
       </div>
+      <div *ngIf="n.screenshot" class="mt-2">
+        <a [href]="n.screenshot" target="_blank" class="text-blue-600 underline">
+          📷 Pogledaj screenshot
+        </a>
+      </div>
+
+
       <button (click)="obrisiNarudzbinu(n._id)"
           class="text-red-600 hover:text-red-800 ml-auto sm:ml-0 sm:mr-4"
           title="Obriši porudžbinu">
@@ -192,6 +199,9 @@
              class="w-full border p-2 rounded" />
       <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona"
              class="w-full border p-2 rounded" />
+      <input type="file"
+       (change)="uploadScreenshot($event)"
+       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
     </div>
 
     <div class="mt-6 flex justify-end gap-4">
