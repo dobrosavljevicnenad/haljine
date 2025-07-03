@@ -159,11 +159,15 @@
         </div>
       </div>
       <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-600">Cena: {{ n.cena | number:'1.0-0' }} RSD</div>
+        <div class="text-sm text-gray-600">Kupac: {{ n.ime }} {{ n.prezime }}</div>
+        <div class="text-sm text-gray-600">Adresa: {{ n.adresa }}</div>
+        <div class="text-sm text-gray-600">Telefon: {{ n.telefon }}</div>
         {{ n.vreme | date:'dd.MM.yyyy HH:mm' }}
       </div>
       <div *ngIf="n.screenshot" class="mt-2">
         <a [href]="n.screenshot" target="_blank" class="text-blue-600 underline">
-          <img [src]="n.screenshot" class="w-40 border rounded-md shadow" alt="Screenshot">
+            <img [src]="n.screenshot" class="w-40 border rounded-md shadow" alt="Screenshot">
         </a>
       </div>
 
@@ -187,6 +191,14 @@
     </h3>
 
     <div class="space-y-4">
+      <input [(ngModel)]="formaKupca.ime" placeholder="Ime"
+             class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime"
+             class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa"
+             class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona"
+             class="w-full border p-2 rounded" />
       <input type="file"
        (change)="uploadScreenshot($event)"
        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
