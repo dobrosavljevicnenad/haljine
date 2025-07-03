@@ -116,7 +116,7 @@ app.post('/api/haljine', async (req, res) => {
 
 // ✅ POST naručivanje haljine (smanji količinu, atomarno)
 app.post('/api/naruci/:id', async (req, res) => {
-  const { boja, kolicina } = req.body;
+  const { boja, kolicina, ime, prezime, adresa, telefon } = req.body; // ✅ OVO DODAJ
 
   const haljina = await Dress.findOne({
     _id: req.params.id,
@@ -145,7 +145,7 @@ app.post('/api/naruci/:id', async (req, res) => {
     haljinaId: haljina._id,
     naziv: haljina.naziv,
     slika: haljina.slika,
-    cena: haljina.cena, // ➕ sačuvaj cenu
+    cena: haljina.cena,
     boja,
     kolicina,
     ime,
@@ -156,6 +156,7 @@ app.post('/api/naruci/:id', async (req, res) => {
 
   res.json({ message: "Naručeno" });
 });
+
 
 app.get('/api/narudzbine', async (req, res) => {
   const narudzbine = await Order.find().sort({ vreme: -1 });
