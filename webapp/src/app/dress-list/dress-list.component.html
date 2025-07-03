@@ -164,6 +164,11 @@
         <div class="text-sm text-gray-600">Telefon: {{ n.telefon }}</div>
         {{ n.vreme | date:'dd.MM.yyyy HH:mm' }}
       </div>
+      <button (click)="obrisiNarudzbinu(n._id)"
+          class="text-red-600 hover:text-red-800 ml-auto sm:ml-0 sm:mr-4"
+          title="Obriši porudžbinu">
+          🗑️
+      </button>
     </li>
   </ul>
 </section>

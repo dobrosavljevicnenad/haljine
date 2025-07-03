@@ -208,6 +208,16 @@ app.delete('/api/haljine/:id', async (req, res) => {
   }
 });
 
+// DELETE narudžbine
+app.delete('/api/narudzbine/:id', async (req, res) => {
+  try {
+    await Order.findByIdAndDelete(req.params.id);
+    res.json({ message: "Narudžbina obrisana" });
+  } catch (err) {
+    res.status(500).json({ error: "Greška pri brisanju narudžbine" });
+  }
+});
+
 
 app.get('/', (req, res) => {
   res.send('🎉 Backend API radi. Možeš koristiti /api/haljine kako bi dobio prikaz svih haljina.');
