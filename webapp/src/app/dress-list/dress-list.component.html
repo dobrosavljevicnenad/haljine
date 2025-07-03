@@ -158,20 +158,19 @@
           <div class="text-sm text-gray-600">Količina: {{ n.kolicina }}</div>
         </div>
       </div>
-      <div class="text-sm text-gray-600">
-        <div *ngIf="n.ime || n.prezime">Kupac: {{ n.ime }} {{ n.prezime }}</div>
-        <div *ngIf="n.adresa">Adresa: {{ n.adresa }}</div>
-        <div *ngIf="n.telefon">Telefon: {{ n.telefon }}</div>
-        <div *ngIf="!n.ime && !n.prezime && !n.adresa && !n.telefon" class="italic text-gray-400">
-          Podaci su u screenshotu!
-        </div>
+      <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-600">Cena: {{ n.cena | number:'1.0-0' }} RSD</div>
+        <div class="text-sm text-gray-600">Kupac: {{ n.ime }} {{ n.prezime }}</div>
+        <div class="text-sm text-gray-600">Adresa: {{ n.adresa }}</div>
+        <div class="text-sm text-gray-600">Telefon: {{ n.telefon }}</div>
+        {{ n.vreme | date:'dd.MM.yyyy HH:mm' }}
       </div>
-
       <div *ngIf="n.screenshot" class="mt-2">
-        <a [href]="n.screenshot" target="_blank">
+        <a [href]="n.screenshot" target="_blank" class="text-blue-600 underline">
           <img [src]="n.screenshot" class="w-40 border rounded-md shadow" alt="Screenshot">
         </a>
       </div>
+
 
       <button (click)="obrisiNarudzbinu(n._id)"
           class="text-red-600 hover:text-red-800 ml-auto sm:ml-0 sm:mr-4"
