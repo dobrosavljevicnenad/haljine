@@ -40,6 +40,7 @@ mongoose.connect('mongodb+srv://ndobrosavljevic01:admin@haljine.usfr19e.mongodb.
 const DressSchema = new mongoose.Schema({
   naziv: String,
   slika: String,
+  cena: Number,
   lager: [
     {
       boja: String,
@@ -52,9 +53,14 @@ const OrderSchema = new mongoose.Schema({
   haljinaId: mongoose.Schema.Types.ObjectId,
   naziv: String,
   slika: String,
+  cena: Number,
   boja: String,
   kolicina: Number,
-  vreme: {type:Date, default: Date.now},
+  ime: String,
+  prezime: String,
+  adresa: String,
+  telefon: String,
+  vreme: { type: Date, default: Date.now },
 });
 
 const Order = mongoose.model('Order', OrderSchema);
@@ -138,9 +144,14 @@ app.post('/api/naruci/:id', async (req, res) => {
   await Order.create({
     haljinaId: haljina._id,
     naziv: haljina.naziv,
-    slika:haljina.slika,
+    slika: haljina.slika,
+    cena: haljina.cena, // ➕ sačuvaj cenu
     boja,
     kolicina,
+    ime,
+    prezime,
+    adresa,
+    telefon,
   });
 
   res.json({ message: "Naručeno" });

@@ -20,7 +20,17 @@ export class DressListComponent {
   novaHaljina = {
     naziv: '',
     slika: '',
+    cena: 0,
     lager: [{ boja: '', kolicina: 0 }],
+  };
+
+  izabranaHaljina: any = null;
+  izabranaBoja: string = '';
+  formaKupca = {
+    ime: '',
+    prezime: '',
+    adresa: '',
+    telefon: ''
   };
 
   novaBoja: { [id: string]: string } = {};
@@ -70,6 +80,7 @@ export class DressListComponent {
       this.novaHaljina = {
         naziv: '',
         slika: '',
+        cena: 0,
         lager: [{ boja: '', kolicina: 0 }],
       };
     });
@@ -126,6 +137,38 @@ export class DressListComponent {
       this.narudzbine = data;
     })
   }
+
+  otvoriFormuZaNarudzbinu(haljina: any, boja: string) {
+    this.izabranaHaljina = haljina;
+    this.izabranaBoja = boja;
+    this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '' };
+  }
+
+  posaljiNarudzbinu() {
+  const kolicina = 1;
+
+  this.http.post(`https://haljine.onrender.com/api/naruci/${this.izabranaHaljina._id}`, {
+    boja: this.izabranaBoja,
+    kolicina,
+    ...this.formaKupca
+  }).subscribe({
+    next: () => {
+      // Ažuriraj lager
+      const bojaEntry = this.izabranaHaljina.lager.find((b: any) => b.boja === this.izabranaBoja);
+      if (bojaEntry) {
+        bojaEntry.kolicina -= kolicina;
+        if (bojaEntry.kolicina <= 0) {
+          this.izabranaHaljina.lager = this.izabranaHaljina.lager.filter((b: any) => b.boja !== this.izabranaBoja);
+        }
+      }
+      this.izabranaHaljina = null;
+      this.ucitajNarudzbine();
+    },
+    error: () => {
+      alert('❌ Greška pri naručivanju.');
+    }
+  });
+}
 
 
   get filteredHaljine(): any[] {
