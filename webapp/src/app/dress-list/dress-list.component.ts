@@ -14,6 +14,7 @@ export class DressListComponent {
   private http = inject(HttpClient);
   haljine: any[] = [];
   ucitavanje: boolean = false;
+  filterBoja: string = '';
 
   novaHaljina = {
     naziv: '',
@@ -104,4 +105,15 @@ export class DressListComponent {
       this.haljine = this.haljine.filter(h => h._id !== id);
     });
   }
+
+
+  get filteredHaljine(): any[] {
+    const boja = this.filterBoja.trim().toLowerCase();
+    if(!boja) return this.haljine;
+
+    return this.haljine.filter(h =>
+      h.lager.some((l:any) => l.boja.toLowerCase().includes(boja))
+    );
+  }
+
 }

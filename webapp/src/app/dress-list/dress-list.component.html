@@ -53,20 +53,44 @@
   </div>
 
   <div class="mt-6">
-    <button (click)="dodajHaljinu()"
+    <button type="button" (click)="dodajHaljinu()"
             class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md shadow-md transition">
       ✅ Dodaj haljinu
     </button>
   </div>
 </section>
 
+<!-- 🎨 Toolbar za filtriranje -->
+<div class="max-w-5xl mx-auto px-4 mb-6">
+  <div class="bg-white shadow-sm border rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="w-full sm:w-auto flex-1">
+      <label for="filterBoja" class="block text-sm font-medium text-gray-700 mb-1">
+        🔍 Filtriraj haljine po boji na lageru
+      </label>
+      <input id="filterBoja"
+             [(ngModel)]="filterBoja"
+             placeholder="npr. crvena, plava, bela..."
+             class="w-full sm:w-64 px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-sm" />
+    </div>
+
+    <div *ngIf="filterBoja" class="sm:ml-4">
+      <button (click)="filterBoja = ''"
+              class="inline-flex items-center text-sm text-gray-600 hover:text-red-600 transition">
+        ❌ Očisti filter
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
 <!-- 🛍️ Prikaz svih haljina -->
 <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4">
-  <div *ngFor="let h of haljine"
+  <div *ngFor="let h of filteredHaljine"
        class="relative bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition border">
 
     <!-- 🗑️ Dugme za brisanje u gornjem desnom uglu -->
-    <button (click)="obrisiHaljinu(h._id)"
+    <button type="button" (click)="obrisiHaljinu(h._id)"
             class="absolute top-2 right-2 bg-red-700 hover:bg-red-200 text-red-600 p-2 rounded-full shadow-md transition"
             title="Obriši haljinu">
       🗑
@@ -84,7 +108,7 @@
         <div class="text-gray-600">
           <span class="font-medium">{{ b.boja }}</span>: {{ b.kolicina }}
         </div>
-        <button
+        <button type="button"
           (click)="naruci(h._id, b.boja, 1)"
           class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md transition shadow">
           Poruči
@@ -98,7 +122,7 @@
                class="border p-1 rounded mr-2 text-sm" />
         <input type="number" [(ngModel)]="novaKolicina[h._id]" placeholder="Količina"
                class="border p-1 rounded mr-2 text-sm w-20" />
-        <button (click)="dodajIliAzurirajBoju(h._id, novaBoja[h._id], novaKolicina[h._id])"
+        <button type="button" (click)="dodajIliAzurirajBoju(h._id, novaBoja[h._id], novaKolicina[h._id])"
                 class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-md">
           Dodaj / Ažuriraj
         </button>
