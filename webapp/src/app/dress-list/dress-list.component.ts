@@ -16,6 +16,7 @@ export class DressListComponent {
   narudzbine: any[] = [];
   ucitavanje: boolean = false;
   filterBoja: string = '';
+  screenshotUploadInProgress: boolean = false;
 
   novaHaljina = {
     naziv: '',
@@ -192,14 +193,24 @@ export class DressListComponent {
   const file = event.target.files[0];
   if (!file) return;
 
+  this.screenshotUploadInProgress = true;
+
   const formData = new FormData();
-  formData.append('slika', file); // backend koristi isto polje kao za sliku haljine
+  formData.append('slika', file);
 
   this.http.post<{ url: string }>('https://haljine.onrender.com/api/upload', formData)
-    .subscribe(res => {
-      this.formaKupca.screenshot = res.url;
+    .subscribe({
+      next: (res) => {
+        this.formaKupca.screenshot = res.url;
+        this.screenshotUploadInProgress = false;
+      },
+      error: () => {
+        alert('Greška pri uploadu slike.');
+        this.screenshotUploadInProgress = false;
+      }
     });
 }
+
 
   get filteredHaljine(): any[] {
     const boja = this.filterBoja.trim().toLowerCase();
