@@ -263,4 +263,33 @@ posaljiKorpu() {
     );
   }
 
+  get grupisaneNarudzbine() {
+  // Grupisaćemo po kupac + vreme + screenshot (ili npr. grupniId ako ga imaš)
+  const grupe: { [key: string]: any } = {};
+
+  for (const n of this.narudzbine) {
+    // Ključ može biti ime+prezime+adresa+telefon+screenshot+vreme (ali vreme može biti sa satima, pa možeš zaokružiti na minut)
+    const vremeString = new Date(n.vreme).toISOString().slice(0,16); // yyyy-MM-ddTHH:mm
+    const key = `${n.ime}|${n.prezime}|${n.adresa}|${n.telefon}|${n.screenshot}|${vremeString}`;
+
+    if (!grupe[key]) {
+      grupe[key] = {
+        kupac: {
+          ime: n.ime,
+          prezime: n.prezime,
+          adresa: n.adresa,
+          telefon: n.telefon,
+          screenshot: n.screenshot,
+          vreme: n.vreme
+        },
+        proizvodi: []
+      };
+    }
+    grupe[key].proizvodi.push(n);
+  }
+
+  return Object.values(grupe);
+  }
+
+
 }

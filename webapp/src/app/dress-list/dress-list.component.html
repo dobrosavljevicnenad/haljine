@@ -152,18 +152,25 @@
 <section *ngIf="korpa.length > 0" class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
   <h2 class="text-2xl font-bold text-gray-800 mb-4">🛒 Korpa</h2>
 
-  <ul class="space-y-4">
-    <li *ngFor="let item of korpa; let i = index" class="border rounded-lg p-4 shadow-sm flex justify-between items-center">
+<ul class="space-y-4">
+  <li *ngFor="let item of korpa; let i = index" class="border rounded-lg p-4 shadow-sm flex justify-between items-center">
+
+    <div class="flex items-center gap-4">
+      <img [src]="item.slika" alt="{{ item.naziv }}" class="w-16 h-16 object-contain rounded-md border" />
+
       <div>
         <div class="font-semibold text-gray-800">{{ item.naziv }} ({{ item.boja }})</div>
         <div class="text-sm text-gray-600">Količina: {{ item.kolicina }}</div>
       </div>
-      <button (click)="ukloniIzKorpe(i)"
-              class="text-red-600 hover:text-red-800" title="Ukloni iz korpe">
-        ❌ Ukloni
-      </button>
-    </li>
-  </ul>
+    </div>
+
+    <button (click)="ukloniIzKorpe(i)"
+            class="text-red-600 hover:text-red-800" title="Ukloni iz korpe">
+      ❌ Ukloni
+    </button>
+  </li>
+</ul>
+
 
   <!-- 👤 Forma za podatke o kupcu -->
   <div class="mt-6 space-y-4">
@@ -186,44 +193,54 @@
 </section>
 
 
-<!-- 📦 Lista poručenih proizvoda -->
 <section class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
   <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Sve porudžbine</h2>
 
   <div *ngIf="narudzbine.length === 0" class="text-gray-500">Nema porudžbina.</div>
 
-  <ul *ngIf="narudzbine.length > 0" class="space-y-4">
-    <li *ngFor="let n of narudzbine" class="border rounded-lg p-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <img [src]="n.slika" class="w-20 h-20 object-contain border rounded-md" />
-        <div>
-          <div class="font-semibold text-gray-800">{{ n.naziv }}</div>
-          <div class="text-sm text-gray-600">Boja: <span class="font-medium">{{ n.boja }}</span></div>
-          <div class="text-sm text-gray-600">Količina: {{ n.kolicina }}</div>
-        </div>
+  <div *ngIf="narudzbine.length > 0" class="space-y-8">
+    <div *ngFor="let grupa of grupisaneNarudzbine" class="border rounded-2xl p-6 shadow-md bg-gray-50">
+
+      <!-- Podaci o kupcu i vreme -->
+      <div class="mb-4 text-gray-700">
+        <div class="font-semibold text-lg">{{ grupa.kupac.ime }} {{ grupa.kupac.prezime }}</div>
+        <div>{{ grupa.kupac.adresa }}</div>
+        <div>{{ grupa.kupac.telefon }}</div>
+        <div class="text-sm text-gray-500">{{ grupa.kupac.vreme | date:'dd.MM.yyyy HH:mm' }}</div>
       </div>
-      <div class="text-sm text-gray-500">
-        <div class="text-sm text-gray-600">Cena: {{ n.cena | number:'1.0-0' }} RSD</div>
-        <div class="text-sm text-gray-600">Kupac: {{ n.ime }} {{ n.prezime }}</div>
-        <div class="text-sm text-gray-600">Adresa: {{ n.adresa }}</div>
-        <div class="text-sm text-gray-600">Telefon: {{ n.telefon }}</div>
-        {{ n.vreme | date:'dd.MM.yyyy HH:mm' }}
-      </div>
-      <div *ngIf="n.screenshot" class="mt-2">
-        <a [href]="n.screenshot" target="_blank" class="text-blue-600 underline">
-            <img [src]="n.screenshot" class="w-40 border rounded-md shadow" alt="Screenshot">
+
+      <!-- Screenshot ako postoji -->
+      <div *ngIf="grupa.kupac.screenshot" class="mb-4">
+        <a [href]="grupa.kupac.screenshot" target="_blank" class="text-blue-600 underline">
+          <img [src]="grupa.kupac.screenshot" class="w-60 border rounded-md shadow" alt="Screenshot" />
         </a>
       </div>
 
+      <!-- Lista proizvoda u ovoj grupi -->
+      <ul class="space-y-3">
+        <li *ngFor="let p of grupa.proizvodi" class="flex items-center gap-4 bg-white p-3 rounded-md shadow-sm">
+          <img [src]="p.slika" class="w-16 h-16 object-contain border rounded-md" />
+          <div>
+            <div class="font-semibold text-gray-800">{{ p.naziv }}</div>
+            <div class="text-sm text-gray-600">Boja: <span class="font-medium">{{ p.boja }}</span></div>
+            <div class="text-sm text-gray-600">Količina: {{ p.kolicina }}</div>
+            <div class="text-sm text-gray-600">Cena: {{ p.cena | number:'1.0-0' }} RSD</div>
+          </div>
+        </li>
+      </ul>
 
-      <button (click)="obrisiNarudzbinu(n._id)"
-          class="text-red-600 hover:text-red-800 ml-auto sm:ml-0 sm:mr-4"
-          title="Obriši porudžbinu">
-          🗑️
+      <!-- Opcija za brisanje cele grupe (nije obavezno, mora da se doda backend logika ako želiš) -->
+      <!--
+      <button (click)="obrisiGrupuNarudzbina(grupa)"
+              class="mt-4 text-red-600 hover:text-red-800 font-semibold">
+        🗑️ Obriši ovu grupu porudžbina
       </button>
-    </li>
-  </ul>
+      -->
+
+    </div>
+  </div>
 </section>
+
 
 
 
