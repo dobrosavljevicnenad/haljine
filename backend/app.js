@@ -224,6 +224,18 @@ app.delete('/api/narudzbine/:id', async (req, res) => {
   }
 });
 
+// DELETE sve porudžbine sa istim screenshotom (grupna narudžbina)
+app.delete('/api/narudzbine/grupa/:screenshotId', async (req, res) => {
+  try {
+    const screenshotId = decodeURIComponent(req.params.screenshotId);
+    const rezultat = await Order.deleteMany({ screenshot: screenshotId });
+    res.json({ message: `Obrisano ${rezultat.deletedCount} narudžbina.` });
+  } catch (err) {
+    res.status(500).json({ error: "Greška pri grupnom brisanju narudžbina" });
+  }
+});
+
+
 // POST naručivanje više haljina odjednom (korpa)
 app.post('/api/naruci-vise', async (req, res) => {
   try {
