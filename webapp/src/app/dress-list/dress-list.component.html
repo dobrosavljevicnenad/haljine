@@ -231,10 +231,12 @@
 
       <!-- Opcija za brisanje cele grupe (nije obavezno, mora da se doda backend logika ako želiš) -->
 
-      <button (click)="obrisiGrupuNarudzbina(grupa)"
+      <!-- ✅ Pravilno prosleđivanje URL-a screenshot-a -->
+      <button (click)="obrisiGrupuNarudzbina(grupa.kupac.screenshot)"
               class="mt-4 text-red-600 hover:text-red-800 font-semibold">
         🗑️ Obriši porudžbinu
       </button>
+
 
 
     </div>

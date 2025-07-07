@@ -117,6 +117,11 @@ ukloniIzKorpe(index: number) {
 }
 
 posaljiKorpu() {
+  if (this.korpa.length === 0) {
+    alert('Korpa je prazna.');
+    return;
+  }
+
   const payload = {
     proizvodi: this.korpa,
     kupac: this.formaKupca
@@ -127,14 +132,17 @@ posaljiKorpu() {
       alert('✅ Uspešno ste poručili više haljina!');
       this.korpa = [];
       this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+      this.screenshotUploadInProgress = false;
       this.ucitaj();
       this.ucitajNarudzbine();
     },
-    error: () => {
+    error: (err) => {
+      console.error('Greška prilikom slanja iz korpe:', err);
       alert('❌ Greška pri slanju porudžbine iz korpe.');
     }
   });
-  }
+}
+
 
 
   dodajBojuPolje() {
@@ -292,13 +300,20 @@ posaljiKorpu() {
   }
 
   obrisiGrupuNarudzbina(screenshot: string) {
-  if (!confirm('Da li si siguran da želiš da obrišeš celu grupu narudžbina?')) return;
-
   const encoded = encodeURIComponent(screenshot);
-  this.http.delete(`https://haljine.onrender.com/api/narudzbine/grupa/${encoded}`).subscribe(() => {
-    this.ucitajNarudzbine(); // osveži prikaz
-  });
+  this.http.delete(`https://haljine.onrender.com/api/narudzbine/grupa/${encoded}`)
+    .subscribe({
+      next: res => {
+        console.log('Obrisana grupa:', res);
+        this.ucitajNarudzbine();
+      },
+      error: err => {
+        console.error('Greška brisanja grupe:', err);
+        alert('❌ Nije obrisana grupa porudžbina.');
+      }
+    });
 }
+
 
 
 
