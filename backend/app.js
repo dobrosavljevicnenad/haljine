@@ -22,6 +22,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'haljine'
+    // here u can restrict the use of formats
   },
 });
 
