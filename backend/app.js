@@ -5,10 +5,19 @@ const http = require('http');
 const multer = require('multer'); // za upload slika
 const { CloudinaryStorage } = require('multer-storage-cloudinary'); // cloud za mongodb
 const cloudinary = require('cloudinary').v2;
+const jwt = require('jsonwebtoken')
 
 // Express i server
 const app = express(); // pravimo instancu express aplikacije, sad mozemo da koristim app.get, app.post, app.use, app.listen..
 const server = http.createServer(app);
+
+const { resolveSoa } = require('dns');
+
+const SECRET_KEY = 'tajna_lozinka123';
+const korisnik = {
+  username: 'admin',
+  password: 'admin'
+};
 
 // Cloudinary konfiguracija
 cloudinary.config({
@@ -97,27 +106,52 @@ app.use((req, res, next) => {
   next();
 });
 
+function autentifikacija(req,res,next){
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if(!token) return res.status(401).json({error: 'Token nije prosledjen'});
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if(err) return res.status(403).json({error: 'Nevazecin token'});
+    req.user = user;
+    next();
+  });
+}
+
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+
+  if (username === korisnik.username && password === korisnik.password) {
+    const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: '2h' });
+    return res.json({ token });
+  }
+
+  return res.status(401).json({ error: 'Neispravno korisničko ime ili šifra' });
+});
+
+
 // Upload slike na Cloudinary
-app.post('/api/upload', upload.single('slika'), (req, res) => {
+app.post('/api/upload', autentifikacija, upload.single('slika'), (req, res) => {
   if (!req.file) return res.status(400).send({ error: 'Fajl nije prosleđen' });
   res.json({ url: req.file.path });
 });
 
 // GET sve haljine
-app.get('/api/haljine', async (req, res) => {
+app.get('/api/haljine', autentifikacija, async (req, res) => {
   const haljine = await Dress.find();
   res.json(haljine);
 });
 
 // POST nova haljina
-app.post('/api/haljine', async (req, res) => {
+app.post('/api/haljine', autentifikacija, async (req, res) => {
   const nova = new Dress(req.body);
   await nova.save();
   res.json({ message: "OK" });
 });
 
 // ✅ POST naručivanje haljine (smanji količinu, atomarno)
-app.post('/api/naruci/:id', async (req, res) => {
+app.post('/api/naruci/:id',  autentifikacija, async (req, res) => {
   const { boja, kolicina, ime, prezime, adresa, telefon, screenshot } = req.body;
 
   const haljina = await Dress.findOne({
@@ -164,13 +198,13 @@ app.post('/api/naruci/:id', async (req, res) => {
 });
 
 
-app.get('/api/narudzbine', async (req, res) => {
+app.get('/api/narudzbine', autentifikacija, async (req, res) => {
   const narudzbine = await Order.find().sort({ vreme: -1 });
   res.json(narudzbine);
 });
 
 // ✅ POST dodavanje količine za boju (atomarno)
-app.post('/api/dodajKolicinu/:id', async (req, res) => {
+app.post('/api/dodajKolicinu/:id', autentifikacija, async (req, res) => {
   const { boja, kolicina } = req.body;
 
   try {
@@ -195,7 +229,7 @@ app.post('/api/dodajKolicinu/:id', async (req, res) => {
 });
 
 // PUT izmena haljine (oprezno koristiti, samo za ime/sliku)
-app.put('/api/haljine/:id', async (req, res) => {
+app.put('/api/haljine/:id',  autentifikacija, async (req, res) => {
   try {
     await Dress.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json({ message: "Izmenjeno" });
@@ -205,7 +239,7 @@ app.put('/api/haljine/:id', async (req, res) => {
 });
 
 // DELETE brisanje haljine po ID-ju
-app.delete('/api/haljine/:id', async (req, res) => {
+app.delete('/api/haljine/:id', autentifikacija, async (req, res) => {
   try {
     await Dress.findByIdAndDelete(req.params.id);
     res.json({ message: "Haljina obrisana" });
@@ -215,7 +249,7 @@ app.delete('/api/haljine/:id', async (req, res) => {
 });
 
 // DELETE narudžbine
-app.delete('/api/narudzbine/:id', async (req, res) => {
+app.delete('/api/narudzbine/:id', autentifikacija,async (req, res) => {
   try {
     await Order.findByIdAndDelete(req.params.id);
     res.json({ message: "Narudžbina obrisana" });
@@ -225,7 +259,7 @@ app.delete('/api/narudzbine/:id', async (req, res) => {
 });
 
 // DELETE sve porudžbine sa istim screenshotom (grupna narudžbina)
-app.delete('/api/narudzbine/grupa/:screenshotId', async (req, res) => {
+app.delete('/api/narudzbine/grupa/:screenshotId',autentifikacija, async (req, res) => {
   try {
     const screenshotId = decodeURIComponent(req.params.screenshotId);
     const rezultat = await Order.deleteMany({ screenshot: screenshotId });
@@ -237,7 +271,7 @@ app.delete('/api/narudzbine/grupa/:screenshotId', async (req, res) => {
 
 
 // POST naručivanje više haljina odjednom (korpa)
-app.post('/api/naruci-vise', async (req, res) => {
+app.post('/api/naruci-vise', autentifikacija,async (req, res) => {
   try {
     const { proizvodi, kupac } = req.body;
     if (!Array.isArray(proizvodi) || proizvodi.length === 0) {
@@ -309,6 +343,11 @@ app.post('/api/naruci-vise', async (req, res) => {
     res.status(500).json({ error: 'Greška na serveru' });
   }
 });
+
+app.get('/api/proveri-token', autentifikacija, (req, res) => {
+  res.json({ validan: true });
+});
+
 
 
 
