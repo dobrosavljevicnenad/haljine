@@ -19,6 +19,7 @@ export class DressListComponent {
   ucitavanje: boolean = false;
   filterBoja: string = '';
   screenshotUploadInProgress: boolean = false;
+  uploadInProgress: boolean = false;
   korpa: any[] = [];
 
   novaHaljina = {
@@ -172,8 +173,11 @@ export class DressListComponent {
     const formData = new FormData();
     formData.append('slika', file);
 
+    this.uploadInProgress = true;
+
     this.http.post<{ url: string }>('https://haljine.onrender.com/api/upload', formData, this.authHeaders()).subscribe(res => {
       this.novaHaljina.slika = res.url;
+      this.uploadInProgress = false;
     });
   }
 
