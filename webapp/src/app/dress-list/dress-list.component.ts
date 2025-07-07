@@ -45,13 +45,22 @@ export class DressListComponent {
   }
 
   ucitaj() {
-    this.ucitavanje = true;
+    this.ucitavanje= true;
     this.http.get<any[]>('https://haljine.onrender.com/api/haljine', {
-      params: { t: Date.now().toString() },
-    }).subscribe(data => {
+    params: { t: Date.now().toString() },
+  }).subscribe({
+    next: data => {
       this.haljine = data;
+    },
+    error: err => {
+      console.error('Greška pri učitavanju haljina:', err);
+      this.haljine = []; // fallback ako baš ne uspe
+    },
+    complete: () => {
       this.ucitavanje = false;
-    });
+    }
+  });
+
   }
 
   // naruci(id: string, boja: string, kolicina: number) {
