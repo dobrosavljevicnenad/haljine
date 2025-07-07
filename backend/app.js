@@ -21,8 +21,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'haljine',
-    allowed_formats: ['jpg', 'jpeg', 'png'],
+    folder: 'haljine'
   },
 });
 
