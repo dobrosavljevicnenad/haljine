@@ -63,6 +63,7 @@ export class DressListComponent {
 
   }
 
+  //refactor
   // naruci(id: string, boja: string, kolicina: number) {
   //   this.http.post(`https://haljine.onrender.com/api/naruci/${id}`, {
   //     boja,
