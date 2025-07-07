@@ -291,5 +291,15 @@ posaljiKorpu() {
   return Object.values(grupe);
   }
 
+  obrisiGrupuNarudzbina(screenshot: string) {
+  if (!confirm('Da li si siguran da želiš da obrišeš celu grupu narudžbina?')) return;
+
+  const encoded = encodeURIComponent(screenshot);
+  this.http.delete(`https://haljine.onrender.com/api/narudzbine/grupa/${encoded}`).subscribe(() => {
+    this.ucitajNarudzbine(); // osveži prikaz
+  });
+}
+
+
 
 }
