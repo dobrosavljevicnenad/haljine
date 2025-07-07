@@ -224,6 +224,81 @@ app.delete('/api/narudzbine/:id', async (req, res) => {
   }
 });
 
+// POST naručivanje više haljina odjednom (korpa)
+app.post('/api/naruci-vise', async (req, res) => {
+  try {
+    const { proizvodi, kupac } = req.body;
+    if (!Array.isArray(proizvodi) || proizvodi.length === 0) {
+      return res.status(400).json({ error: 'Nema proizvoda za naručiti' });
+    }
+
+    // Provera da li su proizvodi na lageru
+    for (const p of proizvodi) {
+      const haljina = await Dress.findOne({
+        _id: p._id,
+        "lager.boja": p.boja
+      });
+      if (!haljina) {
+        return res.status(404).json({ error: `Haljina ${p.naziv} sa bojom ${p.boja} nije pronađena` });
+      }
+      const bojaEntry = haljina.lager.find(e => e.boja === p.boja);
+      if (!bojaEntry || bojaEntry.kolicina < p.kolicina) {
+        return res.status(400).json({ error: `Nema dovoljno na lageru za ${p.naziv} (${p.boja})` });
+      }
+    }
+
+    // Smanjujemo lager i kreiramo narudžbine u transakciji
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      for (const p of proizvodi) {
+        await Dress.updateOne(
+          { _id: p._id, "lager.boja": p.boja },
+          { $inc: { "lager.$.kolicina": -p.kolicina } },
+          { session }
+        );
+
+        await Dress.updateOne(
+          { _id: p._id },
+          { $pull: { lager: { boja: p.boja, kolicina: { $lte: 0 } } } },
+          { session }
+        );
+
+        const novaNarudzbina = {
+          haljinaId: p._id,
+          naziv: p.naziv,
+          slika: p.slika,
+          cena: p.cena,
+          boja: p.boja,
+          kolicina: p.kolicina,
+          ime: kupac.ime || '',
+          prezime: kupac.prezime || '',
+          adresa: kupac.adresa || '',
+          telefon: kupac.telefon || '',
+          screenshot: kupac.screenshot || '',
+        };
+
+        await Order.create([novaNarudzbina], { session });
+      }
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.json({ message: 'Uspešno naručeno više haljina' });
+    } catch (err) {
+      await session.abortTransaction();
+      session.endSession();
+      console.error(err);
+      res.status(500).json({ error: 'Greška pri naručivanju proizvoda' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Greška na serveru' });
+  }
+});
+
+
 
 app.get('/', (req, res) => {
   res.send('🎉 Backend API radi. Možeš koristiti /api/haljine kako bi dobio prikaz svih haljina.');

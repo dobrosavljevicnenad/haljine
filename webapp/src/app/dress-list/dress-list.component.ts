@@ -17,6 +17,7 @@ export class DressListComponent {
   ucitavanje: boolean = false;
   filterBoja: string = '';
   screenshotUploadInProgress: boolean = false;
+  korpa: any[] = [];
 
   novaHaljina = {
     naziv: '',
@@ -94,6 +95,47 @@ export class DressListComponent {
       };
     });
   }
+
+  dodajUKorpu(haljina: any, boja: string) {
+  const postojeca = this.korpa.find(item => item._id === haljina._id && item.boja === boja);
+  if (postojeca) {
+    postojeca.kolicina += 1;
+  } else {
+    this.korpa.push({
+      _id: haljina._id,
+      naziv: haljina.naziv,
+      slika: haljina.slika,
+      cena: haljina.cena,
+      boja,
+      kolicina: 1
+    });
+  }
+}
+
+ukloniIzKorpe(index: number) {
+  this.korpa.splice(index, 1);
+}
+
+posaljiKorpu() {
+  const payload = {
+    proizvodi: this.korpa,
+    kupac: this.formaKupca
+  };
+
+  this.http.post('https://haljine.onrender.com/api/naruci-vise', payload).subscribe({
+    next: () => {
+      alert('✅ Uspešno ste poručili više haljina!');
+      this.korpa = [];
+      this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+      this.ucitaj();
+      this.ucitajNarudzbine();
+    },
+    error: () => {
+      alert('❌ Greška pri slanju porudžbine iz korpe.');
+    }
+  });
+  }
+
 
   dodajBojuPolje() {
     this.novaHaljina.lager.push({ boja: '', kolicina: 0 });
@@ -209,7 +251,7 @@ export class DressListComponent {
         this.screenshotUploadInProgress = false;
       }
     });
-}
+  }
 
 
   get filteredHaljine(): any[] {
