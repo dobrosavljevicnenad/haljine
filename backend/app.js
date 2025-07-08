@@ -15,8 +15,8 @@ const { resolveSoa } = require('dns');
 
 const SECRET_KEY = 'tajna_lozinka123';
 const korisnik = {
-  username: 'admin',
-  password: 'admin'
+  username: 'butik',
+  password: 'butik123'
 };
 
 // Cloudinary konfiguracija

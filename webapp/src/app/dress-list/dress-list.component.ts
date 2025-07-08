@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, OnInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './dress-list.component.html',
   styleUrls: ['./dress-list.component.scss'],
 })
-export class DressListComponent {
+export class DressListComponent implements OnInit {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
 
@@ -42,12 +42,11 @@ export class DressListComponent {
   novaBoja: { [id: string]: string } = {};
   novaKolicina: { [id: string]: number } = {};
 
-  // 👇 Autentifikacija
   token: string | null = null;
   username: string = '';
   password: string = '';
 
-  constructor() {
+  ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.token = localStorage.getItem('token');
     }
@@ -68,6 +67,8 @@ export class DressListComponent {
           localStorage.setItem('token', res.token);
         }
         this.token = res.token;
+        this.username = '';
+        this.password = '';
         this.ucitaj();
         this.ucitajNarudzbine();
       },
@@ -82,6 +83,8 @@ export class DressListComponent {
     this.token = null;
     this.haljine = [];
     this.narudzbine = [];
+    this.korpa = [];
+    this.ucitavanje = false;
   }
 
   authHeaders() {
@@ -89,22 +92,34 @@ export class DressListComponent {
   }
 
   ucitaj() {
-  this.ucitavanje = true;
-  this.http.get<any[]>('https://haljine.onrender.com/api/haljine', this.authHeaders()).subscribe({
-    next: data => {
-      this.haljine = data;
-    },
-    error: err => {
-      console.error('Greška pri učitavanju haljina:', err);
-      this.haljine = [];
-      this.ucitavanje = false; // ← OVO JE BITNO
-    },
-    complete: () => {
-      this.ucitavanje = false;
-    }
-  });
-}
+    this.ucitavanje = true;
+    this.http.get<any[]>('https://haljine.onrender.com/api/haljine', this.authHeaders()).subscribe({
+      next: data => {
+        this.haljine = data;
+      },
+      error: err => {
+        console.error('Greška pri učitavanju haljina:', err);
+        this.haljine = [];
+        this.ucitavanje = false;
+        if (err.status === 401) this.logout();
+      },
+      complete: () => {
+        this.ucitavanje = false;
+      }
+    });
+  }
 
+  ucitajNarudzbine() {
+    this.http.get<any[]>('https://haljine.onrender.com/api/narudzbine', this.authHeaders()).subscribe({
+      next: data => {
+        this.narudzbine = data;
+      },
+      error: err => {
+        console.error('Greška pri učitavanju narudžbina:', err);
+        if (err.status === 401) this.logout();
+      }
+    });
+  }
 
   dodajHaljinu() {
     this.http.post('https://haljine.onrender.com/api/haljine', this.novaHaljina, this.authHeaders()).subscribe(() => {
@@ -174,7 +189,6 @@ export class DressListComponent {
 
     const formData = new FormData();
     formData.append('slika', file);
-
     this.uploadInProgress = true;
 
     this.http.post<{ url: string }>('https://haljine.onrender.com/api/upload', formData, this.authHeaders()).subscribe(res => {
@@ -210,12 +224,6 @@ export class DressListComponent {
 
     this.http.delete(`https://haljine.onrender.com/api/haljine/${id}`, this.authHeaders()).subscribe(() => {
       this.haljine = this.haljine.filter(h => h._id !== id);
-    });
-  }
-
-  ucitajNarudzbine() {
-    this.http.get<any[]>('https://haljine.onrender.com/api/narudzbine', this.authHeaders()).subscribe(data => {
-      this.narudzbine = data;
     });
   }
 
