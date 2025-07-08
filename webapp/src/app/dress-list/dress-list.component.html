@@ -23,298 +23,296 @@
 </div>
 
 <!-- 👤 Logout dugme (vidljivo kada postoji token) -->
-<div *ngIf="token" class="fixed top-4 right-4 z-50">
-  <button (click)="logout()"
-          class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md shadow">
-    🚪 Odjavi se
-  </button>
-</div>
+<div *ngIf="token">
+  <div class="fixed top-4 right-4 z-50">
+    <button (click)="logout()"
+            class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-md shadow">
+      🚪 Odjavi se
+    </button>
+  </div>
+
 
 <!-- 📦 Forma za dodavanje nove haljine -->
-<div *ngIf="ucitavanje"
-     class="fixed inset-0 z-50 bg-white bg-opacity-95 flex items-center justify-center text-center p-6">
-  <div>
-    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
-      🔄 Učitavanje podataka...
+  <div *ngIf="ucitavanje"
+      class="fixed inset-0 z-50 bg-white bg-opacity-95 flex items-center justify-center text-center p-6">
+    <div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
+        🔄 Učitavanje podataka...
+      </h2>
+      <p class="text-lg text-gray-600 max-w-xl mx-auto">
+        Backend server se trenutno pokreće. Ovo može potrajati i do 30 sekundi. Hvala na strpljenju 🙏
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="!ucitavanje">
+  <section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-lg mb-10">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+      ➕ Dodaj novu haljinu
     </h2>
-    <p class="text-lg text-gray-600 max-w-xl mx-auto">
-      Backend server se trenutno pokreće. Ovo može potrajati i do 30 sekundi. Hvala na strpljenju 🙏
-    </p>
-  </div>
-</div>
 
-<div *ngIf="!ucitavanje">
-
-<section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-lg mb-10">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-    ➕ Dodaj novu haljinu
-  </h2>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <label class="block">
-      <span class="text-sm font-medium text-gray-700">Naziv</span>
-      <input [(ngModel)]="novaHaljina.naziv"
-             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-             placeholder="Unesi naziv haljine" />
-    </label>
-
-    <label class="block">
-      <span class="text-sm font-medium text-gray-700">Cena (RSD)</span>
-      <input type="number"
-            [(ngModel)]="novaHaljina.cena"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-            placeholder="npr. 3990" />
-    </label>
-
-
-    <label class="block">
-      <span class="text-sm font-medium text-gray-700">Izaberi sliku</span>
-      <input type="file"
-             (change)="uploadSlika($event)"
-             class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-    </label>
-  </div>
-
-  <div class="mt-6 space-y-4">
-    <div *ngFor="let l of novaHaljina.lager; let i = index" class="flex items-center gap-4">
-      <div class="w-1/2">
-        <label class="block text-sm font-medium text-gray-700">Boja {{ i + 1 }}</label>
-        <input [(ngModel)]="l.boja"
-               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-               placeholder="npr. crvena" />
-      </div>
-      <div class="w-1/2">
-        <label class="block text-sm font-medium text-gray-700">Količina</label>
-        <input type="number"
-               [(ngModel)]="l.kolicina"
-               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-               min="0" />
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-6">
-  <button type="button"
-          (click)="dodajHaljinu()"
-          [disabled]="uploadInProgress || !novaHaljina.slika"
-          class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Sačekaj da se slika učita pre dodavanja">
-      ✅ Dodaj haljinu
-    </button>
-  </div>
-
-</section>
-
-<!-- 🎨 Toolbar za filtriranje -->
-<div class="max-w-5xl mx-auto px-4 mb-6">
-  <div class="bg-white shadow-sm border rounded-xl p-4 flex flex-col sm:flex-row sm:justify-center items-center text-center gap-4">
-    <div class="w-full sm:w-auto flex-1">
-      <label for="filterBoja" class="block text-sm font-medium text-gray-700 mb-1">
-        🔍 Filtriraj haljine po boji na lageru
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <label class="block">
+        <span class="text-sm font-medium text-gray-700">Naziv</span>
+        <input [(ngModel)]="novaHaljina.naziv"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+              placeholder="Unesi naziv haljine" />
       </label>
-      <input id="filterBoja"
-             [(ngModel)]="filterBoja"
-             placeholder="npr. crvena, plava, bela..."
-             class="w-full sm:w-64 px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-sm" />
+
+      <label class="block">
+        <span class="text-sm font-medium text-gray-700">Cena (RSD)</span>
+        <input type="number"
+              [(ngModel)]="novaHaljina.cena"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+              placeholder="npr. 3990" />
+      </label>
+
+
+      <label class="block">
+        <span class="text-sm font-medium text-gray-700">Izaberi sliku</span>
+        <input type="file"
+              (change)="uploadSlika($event)"
+              class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+      </label>
     </div>
 
-    <div *ngIf="filterBoja" class="sm:ml-4">
-      <button (click)="filterBoja = ''"
-              class="inline-flex items-center text-sm text-gray-600 hover:text-red-600 transition">
-        ❌ Očisti filter
-      </button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- 🛍️ Prikaz svih haljina -->
-<section class="grid grid-cols-1 gap-6 px-4 max-w-xl mx-auto">
-  <div *ngFor="let h of filteredHaljine"
-       class="relative bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition border">
-
-    <!-- 🗑️ Dugme za brisanje u gornjem desnom uglu -->
-    <button type="button" (click)="obrisiHaljinu(h._id)"
-            class="absolute top-2 right-2 bg-red-700 hover:bg-red-200 text-red-600 p-2 rounded-full shadow-md transition"
-            title="Obriši haljinu">
-      🗑
-    </button>
-
-    <img [src]="h.slika" alt="{{ h.naziv }}"
-    class="w-full h-auto object-contain" />
-
-
-
-    <div class="p-4">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ h.naziv }}</h3>
-
-      <div *ngFor="let b of h.lager"
-           class="flex items-center justify-between text-sm mb-2">
-        <div class="text-gray-600">
-          <span class="font-medium">{{ b.boja }}</span>: {{ b.kolicina }}
+    <div class="mt-6 space-y-4">
+      <div *ngFor="let l of novaHaljina.lager; let i = index" class="flex items-center gap-4">
+        <div class="w-1/2">
+          <label class="block text-sm font-medium text-gray-700">Boja {{ i + 1 }}</label>
+          <input [(ngModel)]="l.boja"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                placeholder="npr. crvena" />
         </div>
-        <button type="button"
-        (click)="otvoriFormuZaNarudzbinu(h, b.boja)"
-          class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md transition shadow">
-          Poruči
-        </button>
-        <button type="button"
-        (click)="dodajUKorpu(h, b.boja)"
-        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md transition shadow ml-2">
-          ➕ Dodaj u korpu
-        </button>
+        <div class="w-1/2">
+          <label class="block text-sm font-medium text-gray-700">Količina</label>
+          <input type="number"
+                [(ngModel)]="l.kolicina"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                min="0" />
+        </div>
+      </div>
+    </div>
 
+    <div class="mt-6">
+    <button type="button"
+            (click)="dodajHaljinu()"
+            [disabled]="uploadInProgress || !novaHaljina.slika"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Sačekaj da se slika učita pre dodavanja">
+        ✅ Dodaj haljinu
+      </button>
+    </div>
+
+  </section>
+
+  <!-- 🎨 Toolbar za filtriranje -->
+  <div class="max-w-5xl mx-auto px-4 mb-6">
+    <div class="bg-white shadow-sm border rounded-xl p-4 flex flex-col sm:flex-row sm:justify-center items-center text-center gap-4">
+      <div class="w-full sm:w-auto flex-1">
+        <label for="filterBoja" class="block text-sm font-medium text-gray-700 mb-1">
+          🔍 Filtriraj haljine po boji na lageru
+        </label>
+        <input id="filterBoja"
+              [(ngModel)]="filterBoja"
+              placeholder="npr. crvena, plava, bela..."
+              class="w-full sm:w-64 px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-sm" />
       </div>
 
-      <!-- 👇 Dodaj boju haljini -->
-      <div class="mt-4 border-t pt-4">
-        <h4 class="text-sm text-gray-700 font-semibold mb-2">➕ Dodaj boju</h4>
-        <input [(ngModel)]="novaBoja[h._id]" placeholder="Boja"
-               class="border p-1 rounded mr-2 text-sm" />
-        <input type="number" [(ngModel)]="novaKolicina[h._id]" placeholder="Količina"
-               class="border p-1 rounded mr-2 text-sm w-20" />
-        <button type="button" (click)="dodajIliAzurirajBoju(h._id, novaBoja[h._id], novaKolicina[h._id])"
-                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-md">
-          Dodaj / Ažuriraj
+      <div *ngIf="filterBoja" class="sm:ml-4">
+        <button (click)="filterBoja = ''"
+                class="inline-flex items-center text-sm text-gray-600 hover:text-red-600 transition">
+          ❌ Očisti filter
         </button>
       </div>
     </div>
   </div>
-</section>
-</div>
-
-<!-- 🛒 Korpa -->
-<section *ngIf="korpa.length > 0" class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
-  <h2 class="text-2xl font-bold text-gray-800 mb-4">🛒 Korpa</h2>
-
-<ul class="space-y-4">
-  <li *ngFor="let item of korpa; let i = index" class="border rounded-lg p-4 shadow-sm flex justify-between items-center">
-
-    <div class="flex items-center gap-4">
-      <img [src]="item.slika" alt="{{ item.naziv }}" class="w-16 h-16 object-contain rounded-md border" />
-
-      <div>
-        <div class="font-semibold text-gray-800">{{ item.naziv }} ({{ item.boja }})</div>
-        <div class="text-sm text-gray-600">Količina: {{ item.kolicina }}</div>
-      </div>
-    </div>
-
-    <button (click)="ukloniIzKorpe(i)"
-            class="text-red-600 hover:text-red-800" title="Ukloni iz korpe">
-      ❌ Ukloni
-    </button>
-  </li>
-</ul>
 
 
-  <!-- 👤 Forma za podatke o kupcu -->
-  <div class="mt-6 space-y-4">
-    <input [(ngModel)]="formaKupca.ime" placeholder="Ime" class="w-full border p-2 rounded" />
-    <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime" class="w-full border p-2 rounded" />
-    <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa" class="w-full border p-2 rounded" />
-    <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona" class="w-full border p-2 rounded" />
-    <input type="file"
-           (change)="uploadScreenshot($event)"
-           class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-  </div>
 
-  <div class="mt-6 flex justify-end">
-    <button (click)="posaljiKorpu()"
-            [disabled]="screenshotUploadInProgress"
-            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md shadow disabled:opacity-50">
-      ✅ Pošalji sve iz korpe
-    </button>
-  </div>
-</section>
+  <!-- 🛍️ Prikaz svih haljina -->
+  <section class="grid grid-cols-1 gap-6 px-4 max-w-xl mx-auto">
+    <div *ngFor="let h of filteredHaljine"
+        class="relative bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition border">
+
+      <!-- 🗑️ Dugme za brisanje u gornjem desnom uglu -->
+      <button type="button" (click)="obrisiHaljinu(h._id)"
+              class="absolute top-2 right-2 bg-red-700 hover:bg-red-200 text-red-600 p-2 rounded-full shadow-md transition"
+              title="Obriši haljinu">
+        🗑
+      </button>
+
+      <img [src]="h.slika" alt="{{ h.naziv }}"
+      class="w-full h-auto object-contain" />
 
 
-<section class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
-  <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Sve porudžbine</h2>
 
-  <div *ngIf="narudzbine.length === 0" class="text-gray-500">Nema porudžbina.</div>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ h.naziv }}</h3>
 
-  <div *ngIf="narudzbine.length > 0" class="space-y-8">
-    <div *ngFor="let grupa of grupisaneNarudzbine" class="border rounded-2xl p-6 shadow-md bg-gray-50">
-
-      <!-- Podaci o kupcu i vreme -->
-      <div class="mb-4 text-gray-700">
-        <div class="font-semibold text-lg">{{ grupa.kupac.ime }} {{ grupa.kupac.prezime }}</div>
-        <div>{{ grupa.kupac.adresa }}</div>
-        <div>{{ grupa.kupac.telefon }}</div>
-        <div class="text-sm text-gray-500">{{ grupa.kupac.vreme | date:'dd.MM.yyyy HH:mm' }}</div>
-      </div>
-
-      <!-- Screenshot ako postoji -->
-      <div *ngIf="grupa.kupac.screenshot" class="mb-4">
-        <a [href]="grupa.kupac.screenshot" target="_blank" class="text-blue-600 underline">
-          <img [src]="grupa.kupac.screenshot" class="w-60 border rounded-md shadow" alt="Screenshot" />
-        </a>
-      </div>
-
-      <!-- Lista proizvoda u ovoj grupi -->
-      <ul class="space-y-3">
-        <li *ngFor="let p of grupa.proizvodi" class="flex items-center gap-4 bg-white p-3 rounded-md shadow-sm">
-          <img [src]="p.slika" class="w-16 h-16 object-contain border rounded-md" />
-          <div>
-            <div class="font-semibold text-gray-800">{{ p.naziv }}</div>
-            <div class="text-sm text-gray-600">Boja: <span class="font-medium">{{ p.boja }}</span></div>
-            <div class="text-sm text-gray-600">Količina: {{ p.kolicina }}</div>
-            <div class="text-sm text-gray-600">Cena: {{ p.cena | number:'1.0-0' }} RSD</div>
+        <div *ngFor="let b of h.lager"
+            class="flex items-center justify-between text-sm mb-2">
+          <div class="text-gray-600">
+            <span class="font-medium">{{ b.boja }}</span>: {{ b.kolicina }}
           </div>
-        </li>
-      </ul>
+          <button type="button"
+          (click)="otvoriFormuZaNarudzbinu(h, b.boja)"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-md transition shadow">
+            Poruči
+          </button>
+          <button type="button"
+          (click)="dodajUKorpu(h, b.boja)"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md transition shadow ml-2">
+            ➕ Dodaj u korpu
+          </button>
 
-      <!-- Opcija za brisanje cele grupe (nije obavezno, mora da se doda backend logika ako želiš) -->
+        </div>
 
-      <!-- ✅ Pravilno prosleđivanje URL-a screenshot-a -->
-      <button (click)="obrisiGrupuNarudzbina(grupa.kupac.screenshot)"
-              class="mt-4 text-red-600 hover:text-red-800 font-semibold">
-        🗑️ Obriši porudžbinu
-      </button>
-
-
-
+        <!-- 👇 Dodaj boju haljini -->
+        <div class="mt-4 border-t pt-4">
+          <h4 class="text-sm text-gray-700 font-semibold mb-2">➕ Dodaj boju</h4>
+          <input [(ngModel)]="novaBoja[h._id]" placeholder="Boja"
+                class="border p-1 rounded mr-2 text-sm" />
+          <input type="number" [(ngModel)]="novaKolicina[h._id]" placeholder="Količina"
+                class="border p-1 rounded mr-2 text-sm w-20" />
+          <button type="button" (click)="dodajIliAzurirajBoju(h._id, novaBoja[h._id], novaKolicina[h._id])"
+                  class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-md">
+            Dodaj / Ažuriraj
+          </button>
+        </div>
+      </div>
     </div>
+  </section>
   </div>
-</section>
 
+  <!-- 🛒 Korpa -->
+  <section *ngIf="korpa.length > 0" class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">🛒 Korpa</h2>
 
+  <ul class="space-y-4">
+    <li *ngFor="let item of korpa; let i = index" class="border rounded-lg p-4 shadow-sm flex justify-between items-center">
 
+      <div class="flex items-center gap-4">
+        <img [src]="item.slika" alt="{{ item.naziv }}" class="w-16 h-16 object-contain rounded-md border" />
 
-<!-- 🧾 Popup forma za narudžbinu -->
-<div *ngIf="izabranaHaljina" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg">
-    <h3 class="text-xl font-semibold text-gray-800 mb-4">
-      🛍️ Poruči: {{ izabranaHaljina.naziv }} ({{ izabranaBoja }})
-    </h3>
+        <div>
+          <div class="font-semibold text-gray-800">{{ item.naziv }} ({{ item.boja }})</div>
+          <div class="text-sm text-gray-600">Količina: {{ item.kolicina }}</div>
+        </div>
+      </div>
 
-    <div class="space-y-4">
-      <input [(ngModel)]="formaKupca.ime" placeholder="Ime"
-             class="w-full border p-2 rounded" />
-      <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime"
-             class="w-full border p-2 rounded" />
-      <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa"
-             class="w-full border p-2 rounded" />
-      <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona"
-             class="w-full border p-2 rounded" />
+      <button (click)="ukloniIzKorpe(i)"
+              class="text-red-600 hover:text-red-800" title="Ukloni iz korpe">
+        ❌ Ukloni
+      </button>
+    </li>
+  </ul>
+
+    <!-- 👤 Forma za podatke o kupcu -->
+    <div class="mt-6 space-y-4">
+      <input [(ngModel)]="formaKupca.ime" placeholder="Ime" class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime" class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa" class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona" class="w-full border p-2 rounded" />
       <input type="file"
-       (change)="uploadScreenshot($event)"
-       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+            (change)="uploadScreenshot($event)"
+            class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
     </div>
 
-    <div class="mt-6 flex justify-end gap-4">
-      <button (click)="izabranaHaljina = null"
-              class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
-        Otkaži
+    <div class="mt-6 flex justify-end">
+      <button (click)="posaljiKorpu()"
+              [disabled]="screenshotUploadInProgress"
+              class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md shadow disabled:opacity-50">
+        ✅ Pošalji sve iz korpe
       </button>
-      <button (click)="posaljiNarudzbinu()"
-        [disabled]="screenshotUploadInProgress"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
-        ✅ Pošalji porudžbinu
-      </button>
+    </div>
+  </section>
 
+
+  <section class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-2xl shadow">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Sve porudžbine</h2>
+
+    <div *ngIf="narudzbine.length === 0" class="text-gray-500">Nema porudžbina.</div>
+
+    <div *ngIf="narudzbine.length > 0" class="space-y-8">
+      <div *ngFor="let grupa of grupisaneNarudzbine" class="border rounded-2xl p-6 shadow-md bg-gray-50">
+
+        <!-- Podaci o kupcu i vreme -->
+        <div class="mb-4 text-gray-700">
+          <div class="font-semibold text-lg">{{ grupa.kupac.ime }} {{ grupa.kupac.prezime }}</div>
+          <div>{{ grupa.kupac.adresa }}</div>
+          <div>{{ grupa.kupac.telefon }}</div>
+          <div class="text-sm text-gray-500">{{ grupa.kupac.vreme | date:'dd.MM.yyyy HH:mm' }}</div>
+        </div>
+
+        <!-- Screenshot ako postoji -->
+        <div *ngIf="grupa.kupac.screenshot" class="mb-4">
+          <a [href]="grupa.kupac.screenshot" target="_blank" class="text-blue-600 underline">
+            <img [src]="grupa.kupac.screenshot" class="w-60 border rounded-md shadow" alt="Screenshot" />
+          </a>
+        </div>
+
+        <!-- Lista proizvoda u ovoj grupi -->
+        <ul class="space-y-3">
+          <li *ngFor="let p of grupa.proizvodi" class="flex items-center gap-4 bg-white p-3 rounded-md shadow-sm">
+            <img [src]="p.slika" class="w-16 h-16 object-contain border rounded-md" />
+            <div>
+              <div class="font-semibold text-gray-800">{{ p.naziv }}</div>
+              <div class="text-sm text-gray-600">Boja: <span class="font-medium">{{ p.boja }}</span></div>
+              <div class="text-sm text-gray-600">Količina: {{ p.kolicina }}</div>
+              <div class="text-sm text-gray-600">Cena: {{ p.cena | number:'1.0-0' }} RSD</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Opcija za brisanje cele grupe (nije obavezno, mora da se doda backend logika ako želiš) -->
+
+        <!-- ✅ Pravilno prosleđivanje URL-a screenshot-a -->
+        <button (click)="obrisiGrupuNarudzbina(grupa.kupac.screenshot)"
+                class="mt-4 text-red-600 hover:text-red-800 font-semibold">
+          🗑️ Obriši porudžbinu
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+
+
+
+  <!-- 🧾 Popup forma za narudžbinu -->
+  <div *ngIf="izabranaHaljina" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">
+        🛍️ Poruči: {{ izabranaHaljina.naziv }} ({{ izabranaBoja }})
+      </h3>
+
+      <div class="space-y-4">
+        <input [(ngModel)]="formaKupca.ime" placeholder="Ime"
+              class="w-full border p-2 rounded" />
+        <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime"
+              class="w-full border p-2 rounded" />
+        <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa"
+              class="w-full border p-2 rounded" />
+        <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona"
+              class="w-full border p-2 rounded" />
+        <input type="file"
+        (change)="uploadScreenshot($event)"
+        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+      </div>
+
+      <div class="mt-6 flex justify-end gap-4">
+        <button (click)="izabranaHaljina = null"
+                class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
+          Otkaži
+        </button>
+        <button (click)="posaljiNarudzbinu()"
+          [disabled]="screenshotUploadInProgress"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+          ✅ Pošalji porudžbinu
+        </button>
+
+      </div>
     </div>
   </div>
 </div>
-

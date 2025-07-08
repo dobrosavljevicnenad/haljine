@@ -89,20 +89,22 @@ export class DressListComponent {
   }
 
   ucitaj() {
-    this.ucitavanje = true;
-    this.http.get<any[]>('https://haljine.onrender.com/api/haljine', this.authHeaders()).subscribe({
-      next: data => {
-        this.haljine = data;
-      },
-      error: err => {
-        console.error('Greška pri učitavanju haljina:', err);
-        this.haljine = [];
-      },
-      complete: () => {
-        this.ucitavanje = false;
-      }
-    });
-  }
+  this.ucitavanje = true;
+  this.http.get<any[]>('https://haljine.onrender.com/api/haljine', this.authHeaders()).subscribe({
+    next: data => {
+      this.haljine = data;
+    },
+    error: err => {
+      console.error('Greška pri učitavanju haljina:', err);
+      this.haljine = [];
+      this.ucitavanje = false; // ← OVO JE BITNO
+    },
+    complete: () => {
+      this.ucitavanje = false;
+    }
+  });
+}
+
 
   dodajHaljinu() {
     this.http.post('https://haljine.onrender.com/api/haljine', this.novaHaljina, this.authHeaders()).subscribe(() => {
