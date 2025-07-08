@@ -213,10 +213,10 @@
 
     <!-- 👤 Forma za podatke o kupcu -->
     <div class="mt-6 space-y-4">
-      <input [(ngModel)]="formaKupca.ime" placeholder="Ime" class="w-full border p-2 rounded" />
+      <!-- <input [(ngModel)]="formaKupca.ime" placeholder="Ime" class="w-full border p-2 rounded" />
       <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime" class="w-full border p-2 rounded" />
       <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa" class="w-full border p-2 rounded" />
-      <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona" class="w-full border p-2 rounded" />
+      <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona" class="w-full border p-2 rounded" /> -->
       <input type="file"
             (change)="uploadScreenshot($event)"
             class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
@@ -240,13 +240,13 @@
     <div *ngIf="narudzbine.length > 0" class="space-y-8">
       <div *ngFor="let grupa of grupisaneNarudzbine" class="border rounded-2xl p-6 shadow-md bg-gray-50">
 
-        <!-- Podaci o kupcu i vreme -->
+        <!-- Podaci o kupcu i vreme
         <div class="mb-4 text-gray-700">
           <div class="font-semibold text-lg">{{ grupa.kupac.ime }} {{ grupa.kupac.prezime }}</div>
           <div>{{ grupa.kupac.adresa }}</div>
           <div>{{ grupa.kupac.telefon }}</div>
           <div class="text-sm text-gray-500">{{ grupa.kupac.vreme | date:'dd.MM.yyyy HH:mm' }}</div>
-        </div>
+        </div> -->
 
         <!-- Screenshot ako postoji -->
         <div *ngIf="grupa.kupac.screenshot" class="mb-4">
@@ -291,14 +291,14 @@
       </h3>
 
       <div class="space-y-4">
-        <input [(ngModel)]="formaKupca.ime" placeholder="Ime"
+        <!-- <input [(ngModel)]="formaKupca.ime" placeholder="Ime"
               class="w-full border p-2 rounded" />
         <input [(ngModel)]="formaKupca.prezime" placeholder="Prezime"
               class="w-full border p-2 rounded" />
         <input [(ngModel)]="formaKupca.adresa" placeholder="Adresa"
               class="w-full border p-2 rounded" />
         <input [(ngModel)]="formaKupca.telefon" placeholder="Broj telefona"
-              class="w-full border p-2 rounded" />
+              class="w-full border p-2 rounded" /> -->
         <input type="file"
         (change)="uploadScreenshot($event)"
         class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />

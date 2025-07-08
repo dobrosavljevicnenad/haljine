@@ -32,10 +32,10 @@ export class DressListComponent implements OnInit {
   izabranaHaljina: any = null;
   izabranaBoja: string = '';
   formaKupca = {
-    ime: '',
-    prezime: '',
-    adresa: '',
-    telefon: '',
+    // ime: '',
+    // prezime: '',
+    // adresa: '',
+    // telefon: '',
     screenshot: ''
   };
 
@@ -168,7 +168,8 @@ export class DressListComponent implements OnInit {
       next: () => {
         alert('✅ Uspešno ste poručili više haljina!');
         this.korpa = [];
-        this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+        // this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+        this.formaKupca = {screenshot: ''};
         this.screenshotUploadInProgress = false;
         this.ucitaj();
         this.ucitajNarudzbine();
@@ -230,7 +231,8 @@ export class DressListComponent implements OnInit {
   otvoriFormuZaNarudzbinu(haljina: any, boja: string) {
     this.izabranaHaljina = haljina;
     this.izabranaBoja = boja;
-    this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+    // this.formaKupca = { ime: '', prezime: '', adresa: '', telefon: '', screenshot: '' };
+    this.formaKupca = {screenshot: ''};
   }
 
   posaljiNarudzbinu() {
@@ -302,15 +304,16 @@ export class DressListComponent implements OnInit {
 
     for (const n of this.narudzbine) {
       const vremeString = new Date(n.vreme).toISOString().slice(0, 16);
-      const key = `${n.ime}|${n.prezime}|${n.adresa}|${n.telefon}|${n.screenshot}|${vremeString}`;
+      const key = `${n.screenshot}|${vremeString}`;
+      // const key = `${n.ime}|${n.prezime}|${n.adresa}|${n.telefon}|${n.screenshot}|${vremeString}`;
 
       if (!grupe[key]) {
         grupe[key] = {
           kupac: {
-            ime: n.ime,
-            prezime: n.prezime,
-            adresa: n.adresa,
-            telefon: n.telefon,
+            // ime: n.ime,
+            // prezime: n.prezime,
+            // adresa: n.adresa,
+            // telefon: n.telefon,
             screenshot: n.screenshot,
             vreme: n.vreme
           },
