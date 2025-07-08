@@ -349,6 +349,28 @@ app.get('/api/proveri-token', autentifikacija, (req, res) => {
   res.json({ validan: true });
 });
 
+app.post('/api/obrisi-boju/:id', autentifikacija, async (req, res) => {
+  const { id } = req.params;
+  const { boja } = req.body;
+
+  if (!boja) return res.status(400).send({ error: 'Boja nije prosleđena' });
+
+  try {
+    const haljina = await Dress.findById(id);
+    if (!haljina) return res.status(404).send({ error: 'Haljina nije pronađena' });
+
+    haljina.lager = haljina.lager.filter(entry => entry.boja !== boja);
+    await haljina.save();
+
+    res.send({ message: 'Boja obrisana' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: 'Greška na serveru' });
+  }
+});
+
+
+
 
 
 

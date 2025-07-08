@@ -164,6 +164,11 @@
             Poruči
           </button>
           <button type="button"
+            (click)="obrisiBoju(h._id, b.boja)"
+            class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md transition shadow">
+            ✖
+          </button>
+          <button type="button"
           (click)="dodajUKorpu(h, b.boja)"
           class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-md transition shadow ml-2">
             ➕ Dodaj u korpu

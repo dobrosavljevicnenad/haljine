@@ -338,4 +338,22 @@ export class DressListComponent implements OnInit {
         }
       });
   }
+
+  obrisiBoju(haljinaId: string, boja: string){
+    if(!confirm('Da li zelsi da obrises boju "${boja}"?')) return;
+
+    this.http.post('https://haljine.onrender.com/api/obrisi-boju/${haljinaId}', {
+      boja: boja
+    }, this.authHeaders()).subscribe({
+      next: () => {
+        const haljina = this.haljine.find(h => h._id === haljinaId);
+        if(haljina){
+          haljina.lager = haljina.lager.filter((b:any) => b.boja !== boja);
+        }
+      },
+      error: () => {
+        alert('❌ Greska pri bisanju boje.')
+      }
+    });
+  }
 }
