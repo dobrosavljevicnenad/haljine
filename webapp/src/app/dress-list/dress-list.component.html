@@ -1,5 +1,5 @@
 <!-- 🔐 Login forma -->
-<div *ngIf="!token" class="max-w-sm mx-auto mt-20 bg-white rounded-2xl shadow-xl px-8 py-10 border border-gray-200">
+<div *ngIf="backendStatus === 'aktivno' && !token" class="max-w-sm mx-auto mt-20 bg-white rounded-2xl shadow-xl px-8 py-10 border border-gray-200">
   <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">🔐 Prijava</h2>
 
   <div class="mb-5">
@@ -34,26 +34,8 @@
   </button>
 </div>
 
-
-
-<!-- 👤 Logout dugme (vidljivo kada postoji token) -->
-<ng-container *ngIf="!!token">
-  <div class="fixed top-4 right-4 z-50">
-  <button (click)="logout()"
-          class="flex items-center gap-2 bg-gray-100 hover:bg-red-100 text-red-600 border border-red-300 font-medium text-sm px-3 py-1.5 rounded-full shadow-sm transition">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-         viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-    </svg>
-    Odjava
-  </button>
-</div>
-
-
-
 <!-- 📦 Forma za dodavanje nove haljine -->
-  <div *ngIf="ucitavanje"
+  <div *ngIf="backendStatus === 'cekanje'"
       class="fixed inset-0 z-50 bg-white bg-opacity-95 flex items-center justify-center text-center p-6">
     <div>
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
@@ -66,6 +48,20 @@
   </div>
 
   <ng-container *ngIf="!ucitavanje">
+
+    <!-- 👤 Logout dugme (vidljivo kada postoji token) -->
+<ng-container *ngIf="backendStatus === 'aktivno' && !!token">
+  <div class="fixed top-4 right-4 z-50">
+  <button (click)="logout()"
+          class="flex items-center gap-2 bg-gray-100 hover:bg-red-100 text-red-600 border border-red-300 font-medium text-sm px-3 py-1.5 rounded-full shadow-sm transition">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+         viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+    </svg>
+    Odjava
+  </button>
+  </div>
   <section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-lg mb-10">
     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
       ➕ Dodaj novu haljinu

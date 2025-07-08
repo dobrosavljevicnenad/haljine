@@ -21,6 +21,7 @@ export class DressListComponent implements OnInit {
   screenshotUploadInProgress: boolean = false;
   uploadInProgress: boolean = false;
   korpa: any[] = [];
+  backendStatus: 'cekanje' | 'aktivno' | 'neuspesno' = 'cekanje';
 
   novaHaljina = {
     naziv: '',
@@ -51,20 +52,27 @@ export class DressListComponent implements OnInit {
     this.token = localStorage.getItem('token');
   }
 
+  this.backendStatus = 'cekanje';
+
   if (this.token) {
     this.http.get('https://haljine.onrender.com/api/proveri-token', this.authHeaders()).subscribe({
       next: () => {
+        this.backendStatus = 'aktivno';
         this.ucitaj();
         this.ucitajNarudzbine();
       },
       error: err => {
+        this.backendStatus = 'neuspesno';
         if (err.status === 401 || err.status === 403) {
           this.logout();
         }
       }
     });
+  } else {
+    this.backendStatus = 'aktivno';
   }
-}
+  }
+
 
 
   login() {
