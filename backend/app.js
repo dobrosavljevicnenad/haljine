@@ -20,8 +20,6 @@ const korisnik = {
   password: process.env.PASSWORD
 };
 
-console.log(process.env.USERNAME)
-console.log(process.env.PASSWORD)
 
 
 // Cloudinary konfiguracija
