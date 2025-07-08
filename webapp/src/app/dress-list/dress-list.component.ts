@@ -47,15 +47,25 @@ export class DressListComponent implements OnInit {
   password: string = '';
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.token = localStorage.getItem('token');
-    }
-
-    if (this.token) {
-      this.ucitaj();
-      this.ucitajNarudzbine();
-    }
+  if (isPlatformBrowser(this.platformId)) {
+    this.token = localStorage.getItem('token');
   }
+
+  if (this.token) {
+    this.http.get('https://haljine.onrender.com/api/proveri-token', this.authHeaders()).subscribe({
+      next: () => {
+        this.ucitaj();
+        this.ucitajNarudzbine();
+      },
+      error: err => {
+        if (err.status === 401 || err.status === 403) {
+          this.logout();
+        }
+      }
+    });
+  }
+}
+
 
   login() {
     this.http.post<{ token: string }>('https://haljine.onrender.com/api/login', {
@@ -85,6 +95,7 @@ export class DressListComponent implements OnInit {
     this.narudzbine = [];
     this.korpa = [];
     this.ucitavanje = false;
+    window.location.reload(); // 👈 Ovo forsira refresh aplikacije
   }
 
   authHeaders() {
