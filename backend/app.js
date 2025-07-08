@@ -6,6 +6,7 @@ const multer = require('multer'); // za upload slika
 const { CloudinaryStorage } = require('multer-storage-cloudinary'); // cloud za mongodb
 const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken')
+require('dotenv').config();
 
 // Express i server
 const app = express(); // pravimo instancu express aplikacije, sad mozemo da koristim app.get, app.post, app.use, app.listen..
@@ -13,18 +14,20 @@ const server = http.createServer(app);
 
 const { resolveSoa } = require('dns');
 
-const SECRET_KEY = 'tajna_lozinka123';
+const SECRET_KEY = process.env.SECRET_KEY;
 const korisnik = {
-  username: 'butik',
-  password: 'butik123'
+  username: process.env.USERNAME,
+  password: process.env.PASSWORD
 };
+
 
 // Cloudinary konfiguracija
 cloudinary.config({
-  cloud_name: 'dnz2tb20t',
-  api_key: '458595913545267',
-  api_secret: 'bFowaB8jtnz44QhBZTVgTI29pWw',
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
 
 // Multer storage za Cloudinary
 const storage = new CloudinaryStorage({
@@ -38,7 +41,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 // MongoDB konekcija
-mongoose.connect('mongodb+srv://ndobrosavljevic01:admin@haljine.usfr19e.mongodb.net/haljine_baza', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('✅ MongoDB konektovan'))
