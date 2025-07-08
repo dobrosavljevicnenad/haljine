@@ -369,7 +369,7 @@ app.post('/api/obrisi-boju/:id', autentifikacija, async (req, res) => {
   }
 });
 
-api.get('/api/proveri-token', autentifikacija, (req,res) => {
+app.get('/api/proveri-token', autentifikacija, (req,res) => {
   res.json({validan: true})
 })
 
