@@ -124,32 +124,51 @@
 
   <!-- 🎨 Toolbar za filtriranje -->
   <div class="max-w-5xl mx-auto px-4 mb-6">
-    <div class="bg-white shadow-sm border rounded-xl p-4 flex flex-col sm:flex-row sm:justify-center items-center text-center gap-4">
-      <div class="w-full sm:w-auto flex-1">
-        <label for="filterBoja" class="block text-sm font-medium text-gray-700 mb-1">
-          🔍 Filtriraj haljine po boji na lageru
-        </label>
-        <input id="filterBoja"
-              [(ngModel)]="filterBoja"
-              placeholder="npr. crvena, plava, bela..."
-              class="w-full sm:w-64 px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition text-sm" />
-      </div>
+  <div class="bg-white shadow-sm border rounded-xl p-4 space-y-4 sm:space-y-0 sm:flex sm:items-end sm:justify-between sm:gap-6">
 
-      <div *ngIf="filterBoja" class="sm:ml-4">
+    <!-- Filter po boji -->
+    <div class="flex-1">
+      <label for="filterBoja" class="block text-sm font-medium text-gray-700 mb-1">
+        🎨 Filtriraj po boji
+      </label>
+      <input id="filterBoja"
+            [(ngModel)]="filterBoja"
+            placeholder="npr. crvena, plava..."
+            class="w-full px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm" />
+      <div *ngIf="filterBoja" class="mt-1 text-right">
         <button (click)="filterBoja = ''"
-                class="inline-flex items-center text-sm text-gray-600 hover:text-red-600 transition">
-          ❌ Očisti filter
+                class="text-xs text-gray-500 hover:text-red-600 transition">
+          ❌ Očisti boju
         </button>
       </div>
     </div>
+
+    <!-- Filter po nazivu -->
+    <div class="flex-1">
+      <label for="filterName" class="block text-sm font-medium text-gray-700 mb-1">
+        🔠 Filtriraj po nazivu
+      </label>
+      <input id="filterName"
+            [(ngModel)]="filterName"
+            placeholder="npr. elegantna, duga haljina..."
+            class="w-full px-3 py-2 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-sm" />
+      <div *ngIf="filterName" class="mt-1 text-right">
+        <button (click)="filterName = ''"
+                class="text-xs text-gray-500 hover:text-red-600 transition">
+          ❌ Očisti naziv
+        </button>
+      </div>
+    </div>
+
   </div>
+</div>
 
 
 
-  <!-- 🛍️ Prikaz svih haljina -->
+
   <!-- 🛍️ Prikaz svih haljina -->
 <section class="grid grid-cols-1 gap-6 px-4 max-w-xl mx-auto">
-  <div *ngFor="let h of filteredHaljine"
+  <div *ngFor="let h of filterByName"
        class="relative bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition">
 
     <!-- 🗑️ Dugme za brisanje -->

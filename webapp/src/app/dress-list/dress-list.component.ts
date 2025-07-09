@@ -18,6 +18,7 @@ export class DressListComponent implements OnInit {
   narudzbine: any[] = [];
   ucitavanje: boolean = false;
   filterBoja: string = '';
+  filterName: string = '';
   screenshotUploadInProgress: boolean = false;
   uploadInProgress: boolean = false;
   korpa: any[] = [];
@@ -317,6 +318,17 @@ export class DressListComponent implements OnInit {
       h.lager.some((l: any) => l.boja.toLowerCase().includes(boja))
     );
   }
+
+  get filterByName(): any[] {
+  const name = this.filterName.trim().toLowerCase();
+  if (!name) return this.filteredHaljine; // ako želiš da se kombinuje sa filterBoja
+
+  return this.filteredHaljine.filter(h =>
+    h.naziv.toLowerCase().includes(name)
+  );
+}
+
+
 
   get grupisaneNarudzbine() {
     const grupe: { [key: string]: any } = {};
