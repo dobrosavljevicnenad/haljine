@@ -377,6 +377,46 @@ app.get('/api/proveri-token', autentifikacija, (req,res) => {
   res.json({validan: true})
 })
 
+app.delete('/api/narudzbine/grupa/:screenshotId', autentifikacija, async (req, res) => {
+  try {
+    const screenshotUrl = decodeURIComponent(req.params.screenshotId);
+
+    // 1. Obriši sve porudžbine koje imaju taj screenshot
+    const rezultat = await Order.deleteMany({ screenshot: screenshotUrl });
+
+    // 2. Izvuci Cloudinary public_id
+    const publicId = getCloudinaryPublicId(screenshotUrl);
+
+    if (publicId) {
+      // 3. Obriši sliku sa Cloudinary-a
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    res.json({
+      message: `Obrisano ${rezultat.deletedCount} narudžbina i slika sa Cloudinary-a.`,
+    });
+  } catch (err) {
+    console.error('❌ Greška pri grupnom brisanju:', err);
+    res.status(500).json({ error: 'Greška pri brisanju porudžbina ili slike' });
+  }
+});
+
+function getCloudinaryPublicId(url) {
+  try {
+    const urlObj = new URL(url);
+    const pathname = urlObj.pathname; // npr. /v1710000000/haljine/screenshot123_abcd.png
+    const parts = pathname.split('/');
+
+    // Npr. ["", "v1710000000", "haljine", "screenshot123_abcd.png"]
+    const folder = parts[2]; // haljine
+    const filename = parts[3].split('.')[0]; // screenshot123_abcd
+    return `${folder}/${filename}`;
+  } catch (err) {
+    console.error('❌ Ne mogu da izvučem public_id iz URL-a:', err);
+    return null;
+  }
+}
+  
 
 
 

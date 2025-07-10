@@ -23,6 +23,8 @@ export class DressListComponent implements OnInit {
   uploadInProgress: boolean = false;
   korpa: any[] = [];
   backendStatus: 'cekanje' | 'aktivno' | 'neuspesno' = 'cekanje';
+  datumOd: string = '';
+  datumDo: string = '';
 
   novaHaljina = {
     naziv: '',
@@ -103,6 +105,11 @@ export class DressListComponent implements OnInit {
     this.korpa = [];
     this.ucitavanje = false;
     window.location.reload(); // 👈 Ovo forsira refresh aplikacije
+  }
+
+  resetujFilter(){
+    this.datumOd = '';
+    this.datumDo = '';
   }
 
   authHeaders() {
@@ -331,7 +338,16 @@ export class DressListComponent implements OnInit {
   get grupisaneNarudzbine() {
     const grupe: { [key: string]: any } = {};
 
+    const od = this.datumOd ? new Date(this.datumOd) : null;
+    const doDatuma = this.datumDo ? new Date(this.datumDo) : null;
+
     for (const n of this.narudzbine) {
+      const vreme = new Date(n.vreme);
+
+      if(od && vreme < od) continue;
+      if(doDatuma && vreme > doDatuma) continue;
+
+
       const vremeString = new Date(n.vreme).toISOString().slice(0, 16);
       const key = `${n.screenshot}|${vremeString}`;
       // const key = `${n.ime}|${n.prezime}|${n.adresa}|${n.telefon}|${n.screenshot}|${vremeString}`;
