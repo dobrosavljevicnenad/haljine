@@ -243,15 +243,6 @@ app.put('/api/haljine/:id',  autentifikacija, async (req, res) => {
   }
 });
 
-// DELETE brisanje haljine po ID-ju
-app.delete('/api/haljine/:id', autentifikacija, async (req, res) => {
-  try {
-    await Dress.findByIdAndDelete(req.params.id);
-    res.json({ message: "Haljina obrisana" });
-  } catch (err) {
-    res.status(500).json({ error: "Greška pri brisanju haljine" });
-  }
-});
 
 // DELETE narudžbine
 app.delete('/api/haljine/:id', autentifikacija, async (req, res) => {
@@ -262,6 +253,8 @@ app.delete('/api/haljine/:id', autentifikacija, async (req, res) => {
 
     // 1. Izvuci Cloudinary public_id
     const publicId = getCloudinaryPublicId(haljina.slika);
+
+    console.log(publicId);
 
     // 2. Obrisi sliku sa Cloudinary-a ako postoji
     if (publicId) {
