@@ -74,8 +74,6 @@ export class DressListComponent implements OnInit {
   }
   }
 
-
-
   login() {
     this.http.post<{ token: string }>('https://haljine.onrender.com/api/login', {
       username: this.username,
