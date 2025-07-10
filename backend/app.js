@@ -388,9 +388,10 @@ app.delete('/api/narudzbine/grupa/:screenshotId', autentifikacija, async (req, r
     const publicId = getCloudinaryPublicId(screenshotUrl);
 
     if (publicId) {
-      // 3. Obriši sliku sa Cloudinary-a
-      await cloudinary.uploader.destroy(publicId);
-    }
+        const cloudinaryResponse = await cloudinary.uploader.destroy(publicId);
+        console.log('🧹 Cloudinary response:', cloudinaryResponse);
+      }
+
 
     res.json({
       message: `Obrisano ${rezultat.deletedCount} narudžbina i slika sa Cloudinary-a.`,
@@ -404,18 +405,19 @@ app.delete('/api/narudzbine/grupa/:screenshotId', autentifikacija, async (req, r
 function getCloudinaryPublicId(url) {
   try {
     const urlObj = new URL(url);
-    const pathname = urlObj.pathname; // npr. /v1710000000/haljine/screenshot123_abcd.png
-    const parts = pathname.split('/');
+    const pathname = urlObj.pathname; // npr. /v1752186199/haljine/cfcwienr6i9ryatki1o0.jpg
+    const parts = pathname.split('/'); // ["", "v1752186199", "haljine", "cfcwienr6i9ryatki1o0.jpg"]
 
-    // Npr. ["", "v1710000000", "haljine", "screenshot123_abcd.png"]
-    const folder = parts[2]; // haljine
-    const filename = parts[3].split('.')[0]; // screenshot123_abcd
-    return `${folder}/${filename}`;
+    const folder = parts[parts.length - 2]; // haljine
+    const filename = parts[parts.length - 1].split('.')[0]; // cfcwienr6i9ryatki1o0
+
+    return `${folder}/${filename}`; // npr. haljine/cfcwienr6i9ryatki1o0
   } catch (err) {
     console.error('❌ Ne mogu da izvučem public_id iz URL-a:', err);
     return null;
   }
 }
+
 
 
 
