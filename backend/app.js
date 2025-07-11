@@ -86,7 +86,7 @@ const Dress = mongoose.model('Dress', DressSchema);
 const corsOptions = {
   origin: function (origin, callback) { // origin je domen(haljine.netlify.app)
     console.log("Origin:", origin);
-    const allowedOrigins = ['http://localhost:4200', 'https://haljine.onrender.com', 'https://haljine.netlify.app'];
+    const allowedOrigins = ['http://localhost:4200', 'https://haljine.onrender.com', 'https://backendhaljine-production.up.railway.app', 'https://haljine.netlify.app'];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true); // ako je domen u listi allowedOrigins onda se poziva calback (dozvoljava se pristup)
     } else {
