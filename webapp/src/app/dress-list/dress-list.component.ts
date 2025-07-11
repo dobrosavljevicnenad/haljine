@@ -58,7 +58,7 @@ export class DressListComponent implements OnInit {
   this.backendStatus = 'cekanje';
 
   if (this.token) {
-    this.http.get('https://backendhaljine-production.up.railway.app/api/proveri-token', this.authHeaders()).subscribe({
+    this.http.get('https://backendhaljine-production-09a8.up.railway.app/api/proveri-token', this.authHeaders()).subscribe({
       next: () => {
         this.backendStatus = 'aktivno';
         this.ucitaj();
@@ -77,7 +77,7 @@ export class DressListComponent implements OnInit {
   }
 
   login() {
-    this.http.post<{ token: string }>('https://backendhaljine-production.up.railway.app/api/login', {
+    this.http.post<{ token: string }>('https://backendhaljine-production-09a8.up.railway.app/api/login', {
       username: this.username,
       password: this.password
     }).subscribe({
@@ -118,7 +118,7 @@ export class DressListComponent implements OnInit {
 
   ucitaj() {
     this.ucitavanje = true;
-    this.http.get<any[]>('https://backendhaljine-production.up.railway.app/api/haljine', this.authHeaders()).subscribe({
+    this.http.get<any[]>('https://backendhaljine-production-09a8.up.railway.app/api/haljine', this.authHeaders()).subscribe({
       next: data => {
         this.haljine = data;
       },
@@ -135,7 +135,7 @@ export class DressListComponent implements OnInit {
   }
 
   ucitajNarudzbine() {
-    this.http.get<any[]>('https://backendhaljine-production.up.railway.app/api/narudzbine', this.authHeaders()).subscribe({
+    this.http.get<any[]>('https://backendhaljine-production-09a8.up.railway.app/api/narudzbine', this.authHeaders()).subscribe({
       next: data => {
         this.narudzbine = data;
       },
@@ -147,7 +147,7 @@ export class DressListComponent implements OnInit {
   }
 
   dodajHaljinu() {
-    this.http.post('https://backendhaljine-production.up.railway.app/api/haljine', this.novaHaljina, this.authHeaders()).subscribe(() => {
+    this.http.post('https://backendhaljine-production-09a8.up.railway.app/api/haljine', this.novaHaljina, this.authHeaders()).subscribe(() => {
       this.ucitaj();
       this.novaHaljina = {
         naziv: '',
@@ -189,7 +189,7 @@ export class DressListComponent implements OnInit {
       kupac: this.formaKupca
     };
 
-    this.http.post('https://backendhaljine-production.up.railway.app/api/naruci-vise', payload, this.authHeaders()).subscribe({
+    this.http.post('https://backendhaljine-production-09a8.up.railway.app/api/naruci-vise', payload, this.authHeaders()).subscribe({
       next: () => {
         alert('✅ Uspešno ste poručili više haljina!');
         this.korpa = [];
@@ -217,7 +217,7 @@ export class DressListComponent implements OnInit {
     formData.append('slika', file);
     this.uploadInProgress = true;
 
-    this.http.post<{ url: string }>('https://backendhaljine-production.up.railway.app/api/upload', formData, this.authHeaders()).subscribe(res => {
+    this.http.post<{ url: string }>('https://backendhaljine-production-09a8.up.railway.app/api/upload', formData, this.authHeaders()).subscribe(res => {
       this.novaHaljina.slika = res.url;
       this.uploadInProgress = false;
     });
@@ -226,7 +226,7 @@ export class DressListComponent implements OnInit {
   dodajIliAzurirajBoju(id: string, boja: string, kolicina: number) {
     if (!boja || !kolicina) return;
 
-    this.http.post(`https://backendhaljine-production.up.railway.app/api/dodajKolicinu/${id}`, {
+    this.http.post(`https://backendhaljine-production-09a8.up.railway.app/api/dodajKolicinu/${id}`, {
       boja,
       kolicina,
     }, this.authHeaders()).subscribe(() => {
@@ -248,7 +248,7 @@ export class DressListComponent implements OnInit {
   obrisiHaljinu(id: string) {
     if (!confirm('Da li si siguran da želiš da obrišeš ovu haljinu?')) return;
 
-    this.http.delete(`https://backendhaljine-production.up.railway.app/api/haljine/${id}`, this.authHeaders()).subscribe(() => {
+    this.http.delete(`https://backendhaljine-production-09a8.up.railway.app/api/haljine/${id}`, this.authHeaders()).subscribe(() => {
       this.haljine = this.haljine.filter(h => h._id !== id);
     });
   }
@@ -263,7 +263,7 @@ export class DressListComponent implements OnInit {
   posaljiNarudzbinu() {
     const kolicina = 1;
 
-    this.http.post(`https://backendhaljine-production.up.railway.app/api/naruci/${this.izabranaHaljina._id}`, {
+    this.http.post(`https://backendhaljine-production-09a8.up.railway.app/api/naruci/${this.izabranaHaljina._id}`, {
       boja: this.izabranaBoja,
       kolicina,
       ...this.formaKupca
@@ -288,7 +288,7 @@ export class DressListComponent implements OnInit {
   obrisiNarudzbinu(id: string) {
     if (!confirm('Da li si siguran da želiš da obrišeš ovu porudžbinu?')) return;
 
-    this.http.delete(`https://backendhaljine-production.up.railway.app/api/narudzbine/${id}`, this.authHeaders()).subscribe(() => {
+    this.http.delete(`https://backendhaljine-production-09a8.up.railway.app/api/narudzbine/${id}`, this.authHeaders()).subscribe(() => {
       this.narudzbine = this.narudzbine.filter(n => n._id !== id);
     });
   }
@@ -302,7 +302,7 @@ export class DressListComponent implements OnInit {
     const formData = new FormData();
     formData.append('slika', file);
 
-    this.http.post<{ url: string }>('https://backendhaljine-production.up.railway.app/api/upload', formData, this.authHeaders())
+    this.http.post<{ url: string }>('https://backendhaljine-production-09a8.up.railway.app/api/upload', formData, this.authHeaders())
       .subscribe({
         next: (res) => {
           this.formaKupca.screenshot = res.url;
@@ -374,7 +374,7 @@ export class DressListComponent implements OnInit {
   obrisiGrupuNarudzbina(screenshot: string) {
     console.log('OVO JE URL', screenshot)
     const encoded = encodeURIComponent(screenshot);
-    this.http.delete(`https://backendhaljine-production.up.railway.app/api/narudzbine/grupa/${encoded}`, this.authHeaders())
+    this.http.delete(`https://backendhaljine-production-09a8.up.railway.app/api/narudzbine/grupa/${encoded}`, this.authHeaders())
       .subscribe({
         next: () => {
           this.ucitajNarudzbine();
@@ -388,7 +388,7 @@ export class DressListComponent implements OnInit {
   obrisiBoju(haljinaId: string, boja: string){
   if(!confirm(`Da li želiš da obrišeš boju "${boja}"?`)) return;
 
-  this.http.post(`https://backendhaljine-production.up.railway.app/api/obrisi-boju/${haljinaId}`, {
+  this.http.post(`https://backendhaljine-production-09a8.up.railway.app/api/obrisi-boju/${haljinaId}`, {
     boja: boja
   }, this.authHeaders()).subscribe({
     next: () => {
