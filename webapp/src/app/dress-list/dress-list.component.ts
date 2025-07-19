@@ -372,7 +372,7 @@ export class DressListComponent implements OnInit {
   }
 
   obrisiGrupuNarudzbina(screenshot: string) {
-    console.log('OVO JE URL', screenshot)
+    if (!confirm('Da li si siguran da želiš da obrišeš ovu porudžbinu?')) return;
     const encoded = encodeURIComponent(screenshot);
     this.http.delete(`https://backend-za-haljine.fly.dev/api/narudzbine/grupa/${encoded}`, this.authHeaders())
       .subscribe({
